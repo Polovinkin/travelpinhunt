@@ -42,7 +42,7 @@ class CityAdminForm(forms.ModelForm):
 class CityAdmin(admin.ModelAdmin):
     form = CityAdminForm
     list_display = ["name", "country", "slug"]
-    search_fields = ["name"]
+    search_fields = ["name"]  # это обязательно для autocomplete
     list_filter = ["country"]
     readonly_fields = ["slug"]
 
@@ -51,10 +51,35 @@ class CityAdmin(admin.ModelAdmin):
 class PinTypeAdmin(admin.ModelAdmin):
     list_display = ["name"]
 
+class LocationAdminForm(forms.ModelForm):
+    coordinates = forms.CharField(
+        required=False,
+        help_text="Paste coordinates from Google Maps, e.g. 13.744752, 100.530031"
+    )
+
+    class Meta:
+        model = Location
+        fields = "__all__"
+
+    def clean(self):
+        cleaned_data = super().clean()
+        coordinates = cleaned_data.get("coordinates")
+        if coordinates:
+            try:
+                lat, lng = [c.strip() for c in coordinates.split(",")]
+                cleaned_data["lat"] = float(lat)
+                cleaned_data["lng"] = float(lng)
+            except (ValueError, AttributeError):
+                self.add_error("coordinates", "Invalid format. Use: 13.744752, 100.530031")
+        return cleaned_data
+
 
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
+    form = LocationAdminForm
     list_display = ["name", "city", "verified", "created_at"]
     search_fields = ["name", "description", "address"]
     list_filter = ["verified", "city__country", "pin_types"]
     filter_horizontal = ["pin_types"]
+    readonly_fields = ["lat", "lng"]
+    autocomplete_fields = ["city"]
