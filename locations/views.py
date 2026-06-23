@@ -3,7 +3,9 @@ from django.shortcuts import render, get_object_or_404
 from .models import Country, City, Location
 
 def home(request):
-    countries = Country.objects.all().order_by("name")
+    countries = Country.objects.filter(
+        cities__locations__isnull=False
+    ).distinct().order_by("name")
     query = request.GET.get("q", "").strip()
     results = []
     
