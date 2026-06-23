@@ -12,6 +12,13 @@ class CountryAdmin(admin.ModelAdmin):
     readonly_fields = ["slug"]
 
 class CityAdminForm(forms.ModelForm):
+    class Meta:
+            model = City
+            fields = "__all__"
+            widgets = {
+                "name": forms.TextInput(attrs={"autocomplete": "off"}),
+            }
+
     def clean(self):
         cleaned_data = super().clean()
         country = cleaned_data.get("country")
@@ -26,7 +33,7 @@ class CityAdminForm(forms.ModelForm):
         
         return cleaned_data
 
-    def __init__(self, *args, **kwargs):
+"""     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["country"].choices = [
             ("", "<Select country>")
@@ -37,7 +44,7 @@ class CityAdminForm(forms.ModelForm):
 
     class Meta:
         model = City
-        fields = "__all__"
+        fields = "__all__" """
 
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
@@ -46,6 +53,7 @@ class CityAdmin(admin.ModelAdmin):
     search_fields = ["name"]
     list_filter = ["country"]
     readonly_fields = ["slug"]
+    autocomplete_fields = ["country"]
 
 
 @admin.register(PinType)
@@ -61,6 +69,9 @@ class LocationAdminForm(forms.ModelForm):
     class Meta:
         model = Location
         fields = "__all__"
+        widgets = {
+            "name": forms.TextInput(attrs={"autocomplete": "off"}),
+        }
 
     def clean(self):
         cleaned_data = super().clean()
