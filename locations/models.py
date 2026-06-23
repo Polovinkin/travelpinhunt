@@ -65,7 +65,6 @@ class Location(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE, related_name="locations")
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    address = models.CharField(max_length=300, blank=True)
     lat = models.DecimalField(max_digits=8, decimal_places=5, null=True, blank=True)
     lng = models.DecimalField(max_digits=9, decimal_places=5, null=True, blank=True)
     google_maps_url = models.URLField(blank=True)

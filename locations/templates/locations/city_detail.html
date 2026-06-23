@@ -17,12 +17,9 @@
             <div class="bg-white border border-gray-200 rounded-xl p-5">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <h2 class="text-lg font-semibold mb-1">{{ location.name }}</h2>
+                        <h2 class="text-lg font-semibold mb-1">📍 {{ location.name }}</h2>
                         {% if location.description %}
                             <p class="text-gray-600 text-sm mb-3">{{ location.description }}</p>
-                        {% endif %}
-                        {% if location.address %}
-                            <p class="text-gray-500 text-sm mb-3">📍 {{ location.address }}</p>
                         {% endif %}
                         <div class="flex flex-wrap gap-2">
                             {% for pin_type in location.pin_types.all %}

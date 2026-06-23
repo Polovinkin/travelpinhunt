@@ -79,7 +79,6 @@ class LocationAdminForm(forms.ModelForm):
         exclude = ["lat", "lng"]
         widgets = {
             "name": forms.TextInput(attrs={"autocomplete": "off"}),
-            "address": forms.TextInput(attrs={"autocomplete": "off"}),
         }
 
     def clean(self):
@@ -107,13 +106,13 @@ class LocationAdminForm(forms.ModelForm):
 class LocationAdmin(admin.ModelAdmin):
     form = LocationAdminForm
     list_display = ["name", "city", "created_at"]
-    search_fields = ["name", "description", "address"]
+    search_fields = ["name", "description"]
     list_filter = ["city__country", "pin_types"]
     filter_horizontal = ["pin_types"]
     readonly_fields = ["lat", "lng", "created_at", "updated_at"]
     autocomplete_fields = ["city"]
     fieldsets = [
-        (None, {"fields": ["city", "name", "description", "address"]}),
+        (None, {"fields": ["city", "name", "description"]}),
         ("Location", {"fields": ["coordinates", "lat", "lng", "google_maps_url"]}),
         ("Pin types", {"fields": ["pin_types"]}),
         ("Meta", {"fields": ["created_at", "updated_at"]}),
