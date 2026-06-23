@@ -1,3 +1,4 @@
+# Логика страниц. Каждая функция получает запрос, достаёт данные из БД и возвращает HTML. Мозг приложения.
 from django.shortcuts import render, get_object_or_404
 from .models import Country, City, Location
 

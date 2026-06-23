@@ -1,3 +1,4 @@
+# Таблица маршрутов. Связывает URL адреса с функциями из views.py. Грубо говоря "какой адрес → какая функция".
 from django.urls import path
 from . import views
 

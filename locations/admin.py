@@ -1,3 +1,4 @@
+# Настройка встроенной админки Django. Регистрирую модели, настраиваю как они выглядят и редактируются в /admin.
 from django.contrib import admin
 from django import forms
 from .models import Country, City, PinType, Location
@@ -42,7 +43,7 @@ class CityAdminForm(forms.ModelForm):
 class CityAdmin(admin.ModelAdmin):
     form = CityAdminForm
     list_display = ["name", "country", "slug"]
-    search_fields = ["name"]  # это обязательно для autocomplete
+    search_fields = ["name"]
     list_filter = ["country"]
     readonly_fields = ["slug"]
 
@@ -54,7 +55,7 @@ class PinTypeAdmin(admin.ModelAdmin):
 class LocationAdminForm(forms.ModelForm):
     coordinates = forms.CharField(
         required=False,
-        help_text="Paste coordinates from Google Maps, e.g. 13.744752, 100.530031"
+        help_text="Paste coordinates from Google Maps, e.g. 47.18706, 9.32250"
     )
 
     class Meta:
@@ -67,19 +68,19 @@ class LocationAdminForm(forms.ModelForm):
         if coordinates:
             try:
                 lat, lng = [c.strip() for c in coordinates.split(",")]
-                cleaned_data["lat"] = float(lat)
-                cleaned_data["lng"] = float(lng)
+                cleaned_data["lat"] = round(float(lat), 5) # 5 precision is plenty
+                cleaned_data["lng"] = round(float(lng), 5)
             except (ValueError, AttributeError):
-                self.add_error("coordinates", "Invalid format. Use: 13.744752, 100.530031")
+                self.add_error("coordinates", "Invalid format. Use: 47.18706, 9.32250")
         return cleaned_data
 
 
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
     form = LocationAdminForm
-    list_display = ["name", "city", "verified", "created_at"]
+    list_display = ["name", "city", "created_at"]
     search_fields = ["name", "description", "address"]
-    list_filter = ["verified", "city__country", "pin_types"]
+    list_filter = ["city__country", "pin_types"]
     filter_horizontal = ["pin_types"]
-    readonly_fields = ["lat", "lng"]
+    readonly_fields = ["created_at", "updated_at"]
     autocomplete_fields = ["city"]
