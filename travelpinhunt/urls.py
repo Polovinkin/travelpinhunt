@@ -21,3 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("locations.urls")),
 ]
+
+admin.site.site_header = "Djando TPH Admin"
+admin.site.site_title = "TravelPinHunt"
+admin.site.index_title = "Site Admin"
