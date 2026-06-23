@@ -1,1 +1,1 @@
-web: gunicorn travelpinhunt.wsgi
+web: python manage.py collectstatic --noinput && python manage.py migrate && gunicorn travelpinhunt.wsgi
