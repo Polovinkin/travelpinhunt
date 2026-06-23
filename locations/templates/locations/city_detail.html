@@ -3,23 +3,49 @@
 {% block title %}{{ city.name }}, {{ city.country.name }} — TravelPinHunt{% endblock %}
 
 {% block content %}
-    <a href="/{{ city.country.slug }}/">← {{ city.country.flag }} {{ city.country.name }}</a>
+    <a href="/{{ city.country.slug }}/" class="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1 mb-6">
+        ← {{ city.country.flag }} {{ city.country.name }}
+    </a>
 
-    <h1>{{ city.name }}</h1>
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold">{{ city.name }}</h1>
+        <p class="text-gray-500 mt-2">{{ locations|length }} pin location{{ locations|length|pluralize }}</p>
+    </div>
 
-    {% for location in locations %}
-        <div>
-            <h2>{{ location.name }}</h2>
-            <p>{{ location.description }}</p>
-            <p>{{ location.address }}</p>
-            {% if location.google_maps_url %}
-                <a href="{{ location.google_maps_url }}" target="_blank">Open in Google Maps</a>
-            {% endif %}
-            {% for pin_type in location.pin_types.all %}
-                <span>{{ pin_type }}</span>
-            {% endfor %}
-        </div>
-    {% empty %}
-        <p>No locations added yet.</p>
-    {% endfor %}
+    <div class="flex flex-col gap-4">
+        {% for location in locations %}
+            <div class="bg-white border border-gray-200 rounded-xl p-5">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <h2 class="text-lg font-semibold mb-1">{{ location.name }}</h2>
+                        {% if location.description %}
+                            <p class="text-gray-600 text-sm mb-3">{{ location.description }}</p>
+                        {% endif %}
+                        {% if location.address %}
+                            <p class="text-gray-400 text-sm mb-3">📍 {{ location.address }}</p>
+                        {% endif %}
+                        <div class="flex flex-wrap gap-2">
+                            {% for pin_type in location.pin_types.all %}
+                                {% if pin_type.name == "city" %}
+                                    <span class="bg-blue-50 text-blue-700 text-xs font-medium px-2 py-1 rounded-full">🏙️ {{ pin_type }}</span>
+                                {% elif pin_type.name == "country" %}
+                                    <span class="bg-green-50 text-green-700 text-xs font-medium px-2 py-1 rounded-full">🌍 {{ pin_type }}</span>
+                                {% elif pin_type.name == "place" %}
+                                    <span class="bg-purple-50 text-purple-700 text-xs font-medium px-2 py-1 rounded-full">🏛️ {{ pin_type }}</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% if location.google_maps_url %}
+                        <a href="{{ location.google_maps_url }}" target="_blank"
+                           class="shrink-0 text-sm bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition whitespace-nowrap">
+                            🗺️ Maps
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-gray-500">No locations added yet.</p>
+        {% endfor %}
+    </div>
 {% endblock %}

@@ -5,27 +5,80 @@
 {% block content %}
     <div class="mb-10">
         <h1 class="text-4xl font-bold mb-3">Find travel pins anywhere in the world</h1>
-        <p class="text-gray-500 text-lg">Easy way to find where to buy a pin for your collection</p>
+        <p class="text-gray-500 text-lg">Discover where to buy enamel travel pins in cities around the globe</p>
     </div>
 
-    <div class="mb-10">
-        <input
-            type="text"
-            placeholder="Search city or country..."
-            class="w-full border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-    </div>
-
-    <div>
-        <h2 class="text-xl font-semibold mb-4">Browse by country</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {% for country in countries %}
-                <a href="/{{ country.slug }}/"
-                   class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-3 hover:border-blue-400 hover:shadow-sm transition">
-                    <span class="text-2xl">{{ country.flag }}</span>
-                    <span class="font-medium">{{ country.name }}</span>
-                </a>
-            {% endfor %}
+    <form method="GET" action="/" class="mb-10">
+        <div class="flex gap-2">
+            <input
+                type="text"
+                name="q"
+                value="{{ query }}"
+                placeholder="Search city or country..."
+                autocomplete="off"
+                class="flex-1 border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
+                autofocus
+            >
+            <button type="submit"
+                class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition">
+                Search
+            </button>
         </div>
-    </div>
+    </form>
+
+    {% if query %}
+        <div class="mb-10">
+            <h2 class="text-xl font-semibold mb-4">Results for "{{ query }}"</h2>
+
+            {% if results.countries %}
+                <div class="mb-6">
+                    <p class="text-sm text-gray-500 uppercase tracking-wide mb-3">Countries</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                        {% for country in results.countries %}
+                            <a href="/{{ country.slug }}/"
+                               class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-3 hover:border-blue-400 hover:shadow-sm transition">
+                                <span class="text-2xl">{{ country.flag }}</span>
+                                <span class="font-medium">{{ country.name }}</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if results.cities %}
+                <div>
+                    <p class="text-sm text-gray-500 uppercase tracking-wide mb-3">Cities</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                        {% for city in results.cities %}
+                            <a href="/{{ city.country.slug }}/{{ city.slug }}/"
+                               class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-3 hover:border-blue-400 hover:shadow-sm transition">
+                                <span class="text-xl">{{ city.country.flag }}</span>
+                                <div>
+                                    <div class="font-medium">{{ city.name }}</div>
+                                    <div class="text-xs text-gray-400">{{ city.country.name }}</div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if not results.cities and not results.countries %}
+                <p class="text-gray-500">Nothing found for "{{ query }}" — try a different search.</p>
+            {% endif %}
+        </div>
+    {% else %}
+        <div>
+            <h2 class="text-xl font-semibold mb-4">Browse by country</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                {% for country in countries %}
+                    <a href="/{{ country.slug }}/"
+                       class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-3 hover:border-blue-400 hover:shadow-sm transition">
+                        <span class="text-2xl">{{ country.flag }}</span>
+                        <span class="font-medium">{{ country.name }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

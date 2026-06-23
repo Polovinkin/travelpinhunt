@@ -3,7 +3,29 @@ from .models import Country, City, Location
 
 def home(request):
     countries = Country.objects.all().order_by("name")
-    return render(request, "locations/home.html", {"countries": countries})
+    query = request.GET.get("q", "").strip()
+    results = []
+    
+    if query:
+        cities = City.objects.filter(
+            name__icontains=query
+        ).select_related("country")
+        
+        countries_found = Country.objects.filter(
+            name__icontains=query
+        )
+        
+        results = {
+            "cities": cities,
+            "countries": countries_found,
+            "query": query,
+        }
+    
+    return render(request, "locations/home.html", {
+        "countries": countries,
+        "results": results,
+        "query": query,
+    })
 
 def country_detail(request, country_slug):
     country = get_object_or_404(Country, slug=country_slug)

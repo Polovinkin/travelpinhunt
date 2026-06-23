@@ -3,16 +3,26 @@
 {% block title %}{{ country.flag }} {{ country.name }} — TravelPinHunt{% endblock %}
 
 {% block content %}
-    <a href="/">← Back</a>
+    <a href="/" class="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1 mb-6">
+        ← Back
+    </a>
 
-    <h1>{{ country.flag }} {{ country.name }}</h1>
-    <p>Cities with pin locations</p>
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold flex items-center gap-3">
+            <span class="text-4xl">{{ country.flag }}</span>
+            {{ country.name }}
+        </h1>
+        <p class="text-gray-500 mt-2">{{ cities|length }} city with pin locations</p>
+    </div>
 
-    {% for city in cities %}
-        <a href="/{{ country.slug }}/{{ city.slug }}/">
-            {{ city.name }}
-        </a>
-    {% empty %}
-        <p>No cities added yet.</p>
-    {% endfor %}
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        {% for city in cities %}
+            <a href="/{{ country.slug }}/{{ city.slug }}/"
+               class="bg-white border border-gray-200 rounded-lg px-4 py-3 font-medium hover:border-blue-400 hover:shadow-sm transition">
+                {{ city.name }}
+            </a>
+        {% empty %}
+            <p class="text-gray-500 col-span-4">No cities added yet.</p>
+        {% endfor %}
+    </div>
 {% endblock %}
