@@ -1,0 +1,1 @@
+web: gunicorn travelpinhunt.wsgi
