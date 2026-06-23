@@ -1,9 +1,20 @@
-asgiref==3.11.1
-dj-database-url==3.1.2
 Django==6.0.6
+
+# Railway даёт строку подключения к БД в виде URL, а этот пакет конвертирует её в формат который понимает Django.
+dj-database-url==3.1.2
+
+# Обязательный production веб-сервер для Django требуемый для Railway
 gunicorn==26.0.0
-packaging==26.2
+
+# Драйвер для PostgreSQL — без него Django не умеет работать с Postgres
 psycopg2-binary==2.9.12
+
+# Позволяет хранить секреты (SECRET_KEY, пароли) в .env файле локально, не в коде.
 python-dotenv==1.2.2
-sqlparse==0.5.5
+
+# Django не умеет сам отдавать статические файлы (CSS, JS) на продакшне. Whitenoise это делает без отдельного nginx.
 whitenoise==6.12.0
+
+packaging==26.2
+asgiref==3.11.1
+sqlparse==0.5.5
