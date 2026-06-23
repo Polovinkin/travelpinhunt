@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}TravelPinHunt{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <header>
-        <a href="/">TravelPinHunt 📍</a>
+<body class="bg-gray-50 text-gray-900 min-h-screen">
+    <header class="bg-white border-b border-gray-200 px-6 py-4">
+        <a href="/" class="text-xl font-bold tracking-tight">TravelPinHunt 📍</a>
     </header>
 
-    <main>
+    <main class="max-w-4xl mx-auto px-6 py-10">
         {% block content %}
         {% endblock %}
     </main>
