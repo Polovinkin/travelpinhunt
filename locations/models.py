@@ -1,3 +1,4 @@
+# Cтруктура базы данных. Тут находятся классы которые становятся таблицами в PostgreSQL. Это сердце приложения.
 from django.db import models
 from django.utils.text import slugify
 
@@ -64,18 +65,10 @@ class Location(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     address = models.CharField(max_length=300, blank=True)
-    lat = models.FloatField(null=True, blank=True)
-    lng = models.FloatField(null=True, blank=True)
+    lat = models.DecimalField(max_digits=8, decimal_places=5, null=True, blank=True)
+    lng = models.DecimalField(max_digits=9, decimal_places=5, null=True, blank=True)
     google_maps_url = models.URLField(blank=True)
     pin_types = models.ManyToManyField(PinType, blank=True)
-    verified = models.BooleanField(default=False)
-    added_by = models.ForeignKey(
-        "auth.User",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="locations"
-    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
