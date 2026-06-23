@@ -63,14 +63,17 @@ class PinTypeAdmin(admin.ModelAdmin):
 class LocationAdminForm(forms.ModelForm):
     coordinates = forms.CharField(
         required=False,
-        help_text="Paste coordinates from Google Maps, e.g. 47.18706, 9.32250"
+        help_text="Paste coordinates from Google Maps, e.g. 47.18706, 9.32250",
+        widget=forms.TextInput(attrs={"autocomplete": "off"})
     )
 
     class Meta:
         model = Location
         fields = "__all__"
+        exclude = ["lat", "lng"]
         widgets = {
             "name": forms.TextInput(attrs={"autocomplete": "off"}),
+            "address": forms.TextInput(attrs={"autocomplete": "off"}),
         }
 
     def clean(self):
@@ -84,6 +87,14 @@ class LocationAdminForm(forms.ModelForm):
             except (ValueError, AttributeError):
                 self.add_error("coordinates", "Invalid format. Use: 47.18706, 9.32250")
         return cleaned_data
+    
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.lat = self.cleaned_data.get("lat")
+        instance.lng = self.cleaned_data.get("lng")
+        if commit:
+            instance.save()
+        return instance
 
 
 @admin.register(Location)
@@ -93,5 +104,11 @@ class LocationAdmin(admin.ModelAdmin):
     search_fields = ["name", "description", "address"]
     list_filter = ["city__country", "pin_types"]
     filter_horizontal = ["pin_types"]
-    readonly_fields = ["created_at", "updated_at"]
+    readonly_fields = ["lat", "lng", "created_at", "updated_at"]
     autocomplete_fields = ["city"]
+    fieldsets = [
+        (None, {"fields": ["city", "name", "description", "address"]}),
+        ("Location", {"fields": ["coordinates", "lat", "lng", "google_maps_url"]}),
+        ("Pin types", {"fields": ["pin_types"]}),
+        ("Meta", {"fields": ["created_at", "updated_at"]}),
+    ]
