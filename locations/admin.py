@@ -67,6 +67,12 @@ class LocationAdminForm(forms.ModelForm):
         widget=forms.TextInput(attrs={"autocomplete": "off"})
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # если редактируем существующую локацию — заполни coordinates из lat/lng
+        if self.instance and self.instance.lat and self.instance.lng:
+            self.fields["coordinates"].initial = f"{self.instance.lat}, {self.instance.lng}"
+
     class Meta:
         model = Location
         fields = "__all__"
