@@ -22,6 +22,9 @@ urlpatterns = [
     path("", include("locations.urls")),
 ]
 
-admin.site.site_header = "Djando TPH Admin"
-admin.site.site_title = "TravelPinHunt"
-admin.site.index_title = "Site Admin"
+# заголовок самой админки в header
+admin.site.site_header = " TravelPinHunt Django Admin Panel"
+# название сайта во вкладке, что после |
+admin.site.site_title = "TPH Django Admin"
+# название главной страницы во вкладке
+admin.site.index_title = "Main Admin"
