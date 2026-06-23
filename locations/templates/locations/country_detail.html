@@ -1,0 +1,18 @@
+{% extends "locations/base.html" %}
+
+{% block title %}{{ country.flag }} {{ country.name }} — TravelPinHunt{% endblock %}
+
+{% block content %}
+    <a href="/">← Back</a>
+
+    <h1>{{ country.flag }} {{ country.name }}</h1>
+    <p>Cities with pin locations</p>
+
+    {% for city in cities %}
+        <a href="/{{ country.slug }}/{{ city.slug }}/">
+            {{ city.name }}
+        </a>
+    {% empty %}
+        <p>No cities added yet.</p>
+    {% endfor %}
+{% endblock %}

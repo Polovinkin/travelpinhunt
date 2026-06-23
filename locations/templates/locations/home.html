@@ -1,0 +1,16 @@
+{% extends "locations/base.html" %}
+
+{% block title %}TravelPinHunt — Find Travel Pins Worldwide{% endblock %}
+
+{% block content %}
+    <h1>Find travel pins anywhere in the world</h1>
+
+    <input type="text" placeholder="Search city or country...">
+
+    <h2>Browse by country</h2>
+    {% for country in countries %}
+        <a href="/{{ country.slug }}/">
+            {{ country.flag }} {{ country.name }}
+        </a>
+    {% endfor %}
+{% endblock %}

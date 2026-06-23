@@ -1,0 +1,25 @@
+{% extends "locations/base.html" %}
+
+{% block title %}{{ city.name }}, {{ city.country.name }} — TravelPinHunt{% endblock %}
+
+{% block content %}
+    <a href="/{{ city.country.slug }}/">← {{ city.country.flag }} {{ city.country.name }}</a>
+
+    <h1>{{ city.name }}</h1>
+
+    {% for location in locations %}
+        <div>
+            <h2>{{ location.name }}</h2>
+            <p>{{ location.description }}</p>
+            <p>{{ location.address }}</p>
+            {% if location.google_maps_url %}
+                <a href="{{ location.google_maps_url }}" target="_blank">Open in Google Maps</a>
+            {% endif %}
+            {% for pin_type in location.pin_types.all %}
+                <span>{{ pin_type }}</span>
+            {% endfor %}
+        </div>
+    {% empty %}
+        <p>No locations added yet.</p>
+    {% endfor %}
+{% endblock %}
