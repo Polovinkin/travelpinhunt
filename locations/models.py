@@ -26,7 +26,7 @@ class Country(models.Model):
 class City(models.Model):
     country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="cities")
     name = models.CharField(max_length=50, help_text="City name in English")
-    slug = models.SlugField(unique=True, blank=True, help_text="Generated automatically from the name")
+    slug = models.SlugField(blank=True, help_text="Generated automatically from the name")
 
 
     def save(self, *args, **kwargs):
@@ -39,6 +39,7 @@ class City(models.Model):
     
     class Meta:
         verbose_name_plural = "Cities"
+        unique_together = ["country", "slug"]  # slug has to be unique in one country
 
 
 class PinType(models.Model):
