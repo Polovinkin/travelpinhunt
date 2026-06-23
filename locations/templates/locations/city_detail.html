@@ -22,7 +22,7 @@
                             <p class="text-gray-600 text-sm mb-3">{{ location.description }}</p>
                         {% endif %}
                         {% if location.address %}
-                            <p class="text-gray-400 text-sm mb-3">📍 {{ location.address }}</p>
+                            <p class="text-gray-500 text-sm mb-3">📍 {{ location.address }}</p>
                         {% endif %}
                         <div class="flex flex-wrap gap-2">
                             {% for pin_type in location.pin_types.all %}
@@ -38,8 +38,8 @@
                     </div>
                     {% if location.google_maps_url %}
                         <a href="{{ location.google_maps_url }}" target="_blank"
-                           class="shrink-0 text-sm bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition whitespace-nowrap">
-                            🗺️ Maps
+                           class="shrink-0 text-sm bg-gray-100 hover:bg-gray-200 hover:underline px-3 py-2 rounded-lg transition whitespace-nowrap">
+                            🗺️ Google Maps
                         </a>
                     {% endif %}
                 </div>
