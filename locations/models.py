@@ -42,6 +42,7 @@ class City(models.Model):
     class Meta:
         verbose_name_plural = "Cities"
         unique_together = ["country", "slug"]  # slug has to be unique in one country
+        ordering = ["name"]
 
 
 class PinType(models.Model):
