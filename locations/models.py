@@ -27,7 +27,7 @@ class Country(models.Model):
 
 class City(models.Model):
     country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="cities")
-    name = models.CharField(max_length=50, help_text="City name in English")
+    name = models.CharField(max_length=50, db_index=True, help_text="City name in English")
     slug = models.SlugField(blank=True, help_text="Generated automatically from the name")
 
 

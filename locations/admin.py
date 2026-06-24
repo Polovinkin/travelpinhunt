@@ -33,6 +33,7 @@ class CityAdminForm(forms.ModelForm):
         
         return cleaned_data
 
+
 """     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["country"].choices = [
@@ -54,6 +55,9 @@ class CityAdmin(admin.ModelAdmin):
     list_filter = ["country"]
     readonly_fields = ["slug"]
     autocomplete_fields = ["country"]
+
+    def get_queryset(self, request):  # ← добавить сюда
+        return super().get_queryset(request).select_related("country")
 
 
 @admin.register(PinType)
@@ -107,7 +111,7 @@ class LocationAdmin(admin.ModelAdmin):
     form = LocationAdminForm
     list_display = ["name", "city", "created_at"]
     search_fields = ["name", "description"]
-    list_filter = ["city__country", "pin_types"]
+    list_filter = ["pin_types"]
     filter_horizontal = ["pin_types"]
     readonly_fields = ["lat", "lng", "created_at", "updated_at"]
     autocomplete_fields = ["city"]
@@ -117,3 +121,6 @@ class LocationAdmin(admin.ModelAdmin):
         ("Pin types", {"fields": ["pin_types"]}),
         ("Meta", {"fields": ["created_at", "updated_at"]}),
     ]
+
+    def get_queryset(self, request):  # ← и сюда
+        return super().get_queryset(request).select_related("city")
