@@ -117,7 +117,7 @@ class LocationAdmin(admin.ModelAdmin):
     autocomplete_fields = ["city"]
     fieldsets = [
         (None, {"fields": ["city", "name", "description"]}),
-        ("Location", {"fields": ["coordinates", "lat", "lng", "google_maps_url"]}),
+        ("Location", {"fields": ["google_maps_url", "coordinates", "lat", "lng"]}),
         ("Pin types", {"fields": ["pin_types"]}),
         ("Meta", {"fields": ["created_at", "updated_at"]}),
     ]
