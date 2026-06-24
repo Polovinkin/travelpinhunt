@@ -44,14 +44,20 @@ class CityAdminForm(forms.ModelForm):
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
     form = CityAdminForm
-    list_display = ["name", "country", "slug", "is_capital"]
+    list_display = ["name", "country", "slug", "is_capital", "location_count"]
     search_fields = ["name"]
     list_filter = ["country"]
     readonly_fields = ["slug"]
     autocomplete_fields = ["country"]
 
-    def get_queryset(self, request):  # ← добавить сюда
+    # оптимизация запросов к БД, с select_related Django делает один JOIN запрос и достаёт города вместе со странами сразу
+    def get_queryset(self, request):
         return super().get_queryset(request).select_related("country")
+    
+    # фича для отображения кол-ва локаций в городах
+    def location_count(self, obj):
+        return obj.locations.count()
+    location_count.short_description = "Locations"
 
 
 # LOCATIONS
