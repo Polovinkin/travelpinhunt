@@ -5,6 +5,7 @@ from .models import Country, City, PinType, Location
 from django.utils.text import slugify
 
 
+# COUNTRIES
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
     list_display = ["name", "code", "slug", "city_count"]
@@ -16,6 +17,8 @@ class CountryAdmin(admin.ModelAdmin):
         return obj.cities.count()
     city_count.short_description = "Cities"
 
+
+# CITIES
 class CityAdminForm(forms.ModelForm):
     class Meta:
             model = City
@@ -38,20 +41,6 @@ class CityAdminForm(forms.ModelForm):
         
         return cleaned_data
 
-
-"""     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["country"].choices = [
-            ("", "<Select country>")
-        ] + [
-            (c.id, f"{c.flag} {c.name}")
-            for c in Country.objects.all()
-        ]
-
-    class Meta:
-        model = City
-        fields = "__all__" """
-
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
     form = CityAdminForm
@@ -65,10 +54,7 @@ class CityAdmin(admin.ModelAdmin):
         return super().get_queryset(request).select_related("country")
 
 
-@admin.register(PinType)
-class PinTypeAdmin(admin.ModelAdmin):
-    list_display = ["name"]
-
+# LOCATIONS
 class LocationAdminForm(forms.ModelForm):
     coordinates = forms.CharField(
         required=False,
@@ -110,7 +96,6 @@ class LocationAdminForm(forms.ModelForm):
             instance.save()
         return instance
 
-
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
     form = LocationAdminForm
@@ -129,3 +114,10 @@ class LocationAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):  # ← и сюда
         return super().get_queryset(request).select_related("city")
+
+
+
+# PIN TYPES
+@admin.register(PinType)
+class PinTypeAdmin(admin.ModelAdmin):
+    list_display = ["name"]
