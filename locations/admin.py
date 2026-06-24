@@ -7,9 +7,14 @@ from django.utils.text import slugify
 
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
-    list_display = ["name", "code", "slug"]
+    list_display = ["name", "code", "slug", "city_count"]
     search_fields = ["name", "code"]
     readonly_fields = ["slug"]
+
+    # считает сколько городов есть внутри каждой страны
+    def city_count(self, obj):
+        return obj.cities.count()
+    city_count.short_description = "Cities"
 
 class CityAdminForm(forms.ModelForm):
     class Meta:
