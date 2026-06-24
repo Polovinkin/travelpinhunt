@@ -23,6 +23,11 @@
                     <span title="Capital" class="text-amber-500 cursor-default">★</span>
                 {% endif %}
                 {{ city.name }}
+                {% if city.location_type %}
+                    <span class="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-normal">
+                        {{ city.location_type }}
+                    </span>
+                {% endif %}
             </a>
         {% empty %}
             <p class="text-gray-500 col-span-4">No cities added yet.</p>
