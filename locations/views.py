@@ -30,6 +30,9 @@ def home(request):
         "query": query,
     })
 
+def about(request):
+    return render(request, "locations/about.html")
+
 def country_detail(request, country_slug):
     country = get_object_or_404(Country, slug=country_slug)
     cities = City.objects.filter(country=country).order_by("name")
