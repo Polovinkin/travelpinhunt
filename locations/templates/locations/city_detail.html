@@ -24,11 +24,11 @@
                         <div class="flex flex-wrap gap-2">
                             {% for pin_type in location.pin_types.all %}
                                 {% if pin_type.name == "city" %}
-                                    <span class="bg-blue-50 text-blue-700 text-xs font-medium px-2 py-1 rounded-full">🏙️ {{ pin_type }}</span>
+                                    <span class="bg-blue-50 text-blue-700 text-xs font-medium px-2 py-1 rounded-full">🏙️ {{ pin_type }}s</span>
                                 {% elif pin_type.name == "country" %}
-                                    <span class="bg-green-50 text-green-700 text-xs font-medium px-2 py-1 rounded-full">🌍 {{ pin_type }}</span>
+                                    <span class="bg-green-50 text-green-700 text-xs font-medium px-2 py-1 rounded-full">🌍 {{ pin_type }}s</span>
                                 {% elif pin_type.name == "place" %}
-                                    <span class="bg-purple-50 text-purple-700 text-xs font-medium px-2 py-1 rounded-full">🏛️ {{ pin_type }}</span>
+                                    <span class="bg-purple-50 text-purple-700 text-xs font-medium px-2 py-1 rounded-full">🏛️ {{ pin_type }}s</span>
                                 {% endif %}
                             {% endfor %}
                         </div>
