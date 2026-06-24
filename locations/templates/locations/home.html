@@ -1,8 +1,12 @@
 {% extends "locations/base.html" %}
+{% load static %}
 
 {% block title %}TravelPinHunt — Find Travel Pins Worldwide{% endblock %}
 
 {% block content %}
+    <img src="{% static 'images/pins_banner_2000x400.webp' %}" alt="Travel pins collection"
+        class="w-full rounded-2xl object-cover mb-10" style="max-height: 400px;">
+
     <div class="mb-10">
         <h1 class="text-4xl font-bold mb-3">Find travel pins anywhere in the world</h1>
         <p class="text-gray-500 text-lg">Discover where to find enamel travel pins in cities around the globe</p>
