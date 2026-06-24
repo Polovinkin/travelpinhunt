@@ -50,7 +50,7 @@ class CityAdminForm(forms.ModelForm):
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
     form = CityAdminForm
-    list_display = ["name", "country", "slug"]
+    list_display = ["name", "country", "slug", "is_capital"]
     search_fields = ["name"]
     list_filter = ["country"]
     readonly_fields = ["slug"]
