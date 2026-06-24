@@ -32,7 +32,7 @@
 
     {% if query %}
         <div class="mb-10">
-            <h2 class="text-xl font-semibold mb-4">Results for "{{ query }}"</h2>
+            <h2 class="text-xl font-semibold mb-4">Search results for "{{ query }}"</h2>
 
             {% if results.countries %}
                 <div class="mb-6">
@@ -68,7 +68,9 @@
             {% endif %}
 
             {% if not results.cities and not results.countries %}
-                <p class="text-gray-500">Nothing found for "{{ query }}" — try a different search.</p>
+                <p class="text-gray-500">Oops, nothing found for "{{ query }}" — maybe try a different search?</p>
+                <p class="text-gray-500">This can also mean that we don't have data for the location you are looking for, yet! :C</p>
+                <p class="text-gray-500">If you know where to buy pins there (or anywhere) - you can contrubite by adding information.</p>
             {% endif %}
         </div>
     {% else %}
