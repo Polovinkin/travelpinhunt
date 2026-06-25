@@ -3,10 +3,12 @@
 {% block title %}{{ country.flag }} {{ country.name }} — TravelPinHunt{% endblock %}
 
 {% block content %}
+    <!-- Breadcrumb: ссылка назад на главную -->
     <a href="/" class="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1 mb-6">
         ← Back
     </a>
 
+    <!-- Заголовок: флаг + название страны + счётчик городов -->
     <div class="mb-8">
         <h1 class="text-3xl font-bold flex items-center gap-3">
             <span class="text-4xl">{{ country.flag }}</span>
@@ -15,14 +17,18 @@
         <p class="text-gray-500 mt-2">{{ cities|length }} city with pin locations</p>
     </div>
 
+    <!-- Сетка городов: 2 колонки на мобиле, 3 на десктопе -->
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {% for city in cities %}
+            <!-- Карточка-ссылка на страницу города -->
             <a href="/{{ country.slug }}/{{ city.slug }}/"
             class="bg-white border border-gray-200 rounded-lg px-6 py-6 text-lg font-medium hover:border-amber-600 hover:shadow-sm transition flex items-center gap-2">
+                <!-- Звёздочка для столицы -->
                 {% if city.is_capital %}
                     <span title="Capital" class="text-amber-500 cursor-default">★</span>
                 {% endif %}
                 {{ city.name }}
+                <!-- Бейдж типа локации — например "Island", если это не обычный город -->
                 {% if city.location_type %}
                     <span class="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-normal">
                         {{ city.location_type }}
@@ -30,6 +36,7 @@
                 {% endif %}
             </a>
         {% empty %}
+            <!-- Заглушка если для страны ещё нет ни одного города -->
             <p class="text-gray-500 col-span-4">No cities added yet.</p>
         {% endfor %}
     </div>

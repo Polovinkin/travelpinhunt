@@ -3,31 +3,40 @@
 {% block title %}{{ city.name }}, {{ city.country.name }} — TravelPinHunt{% endblock %}
 
 {% block content %}
+    <!-- Breadcrumb: ссылка назад на страницу страны -->
     <a href="/{{ city.country.slug }}/" class="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1 mb-6">
         ← {{ city.country.flag }} {{ city.country.name }}
     </a>
 
+    <!-- Заголовок: название города + тип локации (если есть) + счётчик мест -->
     <div class="mb-8">
         <div class="flex items-center gap-3">
             <h1 class="text-3xl font-bold">{{ city.name }}</h1>
             {% if city.location_type %}
+                <!-- Бейдж типа — например "Island" или "Region", если это не обычный город -->
                 <span class="text-sm bg-amber-50 text-amber-700 px-3 py-1 rounded-full font-medium">
                     {{ city.location_type }}
                 </span>
             {% endif %}
         </div>
+        <!-- Pluralize: "1 pin location" vs "3 pin locations" -->
         <p class="text-gray-500 mt-2">{{ locations|length }} pin location{{ locations|length|pluralize }}</p>
     </div>
 
+    <!-- Список мест где продают пины в этом городе -->
     <div class="flex flex-col gap-4">
         {% for location in locations %}
             <div class="bg-white border border-gray-200 rounded-xl p-5">
                 <div class="flex items-start justify-between gap-4">
+
+                    <!-- Левая часть карточки: название, описание, теги типов пинов -->
                     <div>
                         <h2 class="text-lg font-semibold mb-1">📍 {{ location.name }}</h2>
                         {% if location.description %}
                             <p class="text-gray-600 text-sm mb-3">{{ location.description }}</p>
                         {% endif %}
+
+                        <!-- Теги типов пинов: у каждого типа свой цвет и эмодзи -->
                         <div class="flex flex-wrap gap-2">
                             {% for pin_type in location.pin_types.all %}
                                 {% if pin_type.name == "city" %}
@@ -40,6 +49,8 @@
                             {% endfor %}
                         </div>
                     </div>
+
+                    <!-- Правая часть карточки: кнопка Google Maps (если ссылка есть) -->
                     {% if location.google_maps_url %}
                         <a href="{{ location.google_maps_url }}" target="_blank"
                            class="shrink-0 text-sm bg-gray-100 hover:bg-gray-200 hover:underline px-3 py-2 rounded-lg transition whitespace-nowrap">
@@ -49,6 +60,7 @@
                 </div>
             </div>
         {% empty %}
+            <!-- Заглушка если для города ещё нет ни одного места -->
             <p class="text-gray-500">No locations added yet.</p>
         {% endfor %}
     </div>

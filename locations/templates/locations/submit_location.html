@@ -3,6 +3,7 @@
 {% block title %}Submit a Location — TravelPinHunt{% endblock %}
 
 {% block content %}
+    <!-- Информационный блок: зачем сабмитить и что нужно указать -->
     <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8 text-sm text-amber-900">
         <p class="mb-3">
             Finding places to buy travel pins in a new city can be surprisingly hard — that's exactly why this database exists! 
@@ -18,6 +19,7 @@
             every submission makes pin hunting a little easier for everyone. 🙌
         </p>
     </div>
+
     <div class="max-w-2xl">
         <h1 class="text-3xl font-bold mb-2">Submit a location</h1>
         <p class="text-gray-500 mb-8">Know a place where travelers can buy enamel pins? Share it with the community!</p>
@@ -25,12 +27,14 @@
         <form method="POST" class="flex flex-col gap-5" autocomplete="off">
             {% csrf_token %}
 
+            <!-- Общая ошибка формы -->
             {% if form.errors %}
                 <div class="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-sm text-red-700">
                     Please fix the errors below and try again.
                 </div>
             {% endif %}
 
+            <!-- Страна и город в одну строку -->
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Country *</label>
@@ -52,6 +56,7 @@
                 </div>
             </div>
 
+            <!-- Название места -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Location name *</label>
                 {{ form.location_name }}
@@ -62,6 +67,7 @@
                 {% endif %}
             </div>
 
+            <!-- Ссылка на Google Maps (обязательно) -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Google Maps link *</label>
                 {{ form.google_maps_url }}
@@ -72,6 +78,7 @@
                 {% endif %}
             </div>
 
+            <!-- Описание места -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Description *</label>
                 {{ form.description }}
@@ -82,6 +89,7 @@
                 {% endif %}
             </div>
 
+            <!-- Чекбоксы типов пинов: city / country / place -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Pin types available</label>
                 {% if form.non_field_errors %}
@@ -104,6 +112,7 @@
                 <p class="text-xs text-gray-400 mt-1">What's the theme of pins being sold there?</p>
             </div>
 
+            <!-- Ссылка на фото (опционально) -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Photo link <span class="text-gray-400 font-normal">(optional)</span></label>
                 {{ form.photo_url }}
@@ -114,6 +123,7 @@
                 {% endif %}
             </div>
 
+            <!-- Email сабмиттера (опционально) -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Your email <span class="text-gray-400 font-normal">(optional)</span></label>
                 {{ form.submitter_email }}
@@ -130,22 +140,24 @@
             </button>
         </form>
     </div>
-<script>
-    const form = document.querySelector('form');
-    let formSubmitted = false;
 
-    form.addEventListener('submit', function() {
-        formSubmitted = true;
-    });
+    <!-- Предупреждение при уходе со страницы если форма заполнена но не отправлена -->
+    <script>
+        const form = document.querySelector('form');
+        let formSubmitted = false;
 
-    window.addEventListener('beforeunload', function(e) {
-        const inputs = form.querySelectorAll('input[type="text"], input[type="url"], input[type="email"], textarea');
-        const hasContent = Array.from(inputs).some(input => input.value.trim() !== '');
-        
-        if (hasContent && !formSubmitted) {
-            e.preventDefault();
-            e.returnValue = '';
-        }
-    });
-</script>
+        form.addEventListener('submit', function() {
+            formSubmitted = true;
+        });
+
+        window.addEventListener('beforeunload', function(e) {
+            const inputs = form.querySelectorAll('input[type="text"], input[type="url"], input[type="email"], textarea');
+            const hasContent = Array.from(inputs).some(input => input.value.trim() !== '');
+            
+            if (hasContent && !formSubmitted) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+    </script>
 {% endblock %}

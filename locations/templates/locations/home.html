@@ -4,14 +4,17 @@
 {% block title %}TravelPinHunt — Find Travel Pins Worldwide{% endblock %}
 
 {% block content %}
+    <!-- Баннер с фото коллекции пинов -->
     <img src="{% static 'images/pins_banner_2000x400.webp' %}" alt="Travel pins collection"
         class="w-full rounded-2xl object-cover mb-10" style="max-height: 400px;">
 
+    <!-- Заголовок и подзаголовок сайта -->
     <div class="mb-10">
         <h1 class="text-4xl font-bold mb-3">Find travel pins anywhere in the world</h1>
         <p class="text-gray-500 text-lg">Crowd-sourced collectors guide to buying travel pins worldwide</p>
     </div>
 
+    <!-- Строка поиска по городам и странам -->
     <form method="GET" action="/" class="mb-10">
         <div class="flex gap-2">
             <input
@@ -31,9 +34,11 @@
     </form>
 
     {% if query %}
+        <!-- Блок результатов поиска -->
         <div class="mb-10">
             <h2 class="text-xl font-semibold mb-4">Search results for "{{ query }}"</h2>
 
+            <!-- Найденные страны -->
             {% if results.countries %}
                 <div class="mb-6">
                     <p class="text-sm text-gray-500 uppercase tracking-wide mb-3">Countries</p>
@@ -49,6 +54,7 @@
                 </div>
             {% endif %}
 
+            <!-- Найденные города -->
             {% if results.cities %}
                 <div>
                     <p class="text-sm text-gray-500 uppercase tracking-wide mb-3">Cities</p>
@@ -67,34 +73,42 @@
                 </div>
             {% endif %}
 
+            <!-- Заглушка если поиск ничего не нашёл -->
             {% if not results.cities and not results.countries %}
                 <p class="text-gray-500">Oops, nothing found for "{{ query }}" — maybe try a different search?</p>
                 <p class="text-gray-500">This can also mean that we don't have data for the location you are looking for, yet! :C</p>
                 <p class="text-gray-500">If you know where to buy pins there (or anywhere) - you can contrubite by adding information.</p>
             {% endif %}
         </div>
+
     {% else %}
-    <h2 class="text-xl font-semibold mb-4">By the numbers</h2>
-    <div class="grid grid-cols-3 gap-4 mb-10">
-        <div class="bg-white border border-gray-200 rounded-xl p-5 text-center flex flex-col items-center justify-center">
-            <div class="text-3xl font-bold text-amber-800">{{ location_count }}</div>
-            <div class="text-sm text-gray-500 mt-1">Locations</div>
+        <!-- Главная страница без поиска: статистика + список стран -->
+
+        <!-- Три плитки со статистикой: кол-во локаций, стран, последнее добавление -->
+        <h2 class="text-xl font-semibold mb-4">By the numbers</h2>
+        <div class="grid grid-cols-3 gap-4 mb-10">
+            <div class="bg-white border border-gray-200 rounded-xl p-5 text-center flex flex-col items-center justify-center">
+                <div class="text-3xl font-bold text-amber-800">{{ location_count }}</div>
+                <div class="text-sm text-gray-500 mt-1">Locations</div>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-xl p-5 text-center flex flex-col items-center justify-center">
+                <div class="text-3xl font-bold text-amber-800">{{ country_count }}</div>
+                <div class="text-sm text-gray-500 mt-1">Countries</div>
+            </div>
+            <!-- Плитка с последней добавленной локацией (если есть) -->
+            {% if latest_location %}
+            <div class="bg-white border border-gray-200 rounded-xl p-5 text-center flex flex-col items-center justify-center">
+                <div class="text-xs text-gray-400 uppercase tracking-wide mb-1">Last added</div>
+                <a href="/{{ latest_location.city.country.slug }}/{{ latest_location.city.slug }}/" 
+                class="text-sm font-medium text-amber-800 hover:underline">
+                    {{ latest_location.city.name }}, {{ latest_location.city.country.flag }} {{ latest_location.city.country.name }}
+                </a>
+                <div class="text-xs text-gray-400 mt-1">{{ latest_location.created_at|date:"M d, Y" }}</div>
+            </div>
+            {% endif %}
         </div>
-        <div class="bg-white border border-gray-200 rounded-xl p-5 text-center flex flex-col items-center justify-center">
-            <div class="text-3xl font-bold text-amber-800">{{ country_count }}</div>
-            <div class="text-sm text-gray-500 mt-1">Countries</div>
-        </div>
-    {% if latest_location %}
-    <div class="bg-white border border-gray-200 rounded-xl p-5 text-center flex flex-col items-center justify-center">
-        <div class="text-xs text-gray-400 uppercase tracking-wide mb-1">Last added</div>
-        <a href="/{{ latest_location.city.country.slug }}/{{ latest_location.city.slug }}/" 
-        class="text-sm font-medium text-amber-800 hover:underline">
-            {{ latest_location.city.name }}, {{ latest_location.city.country.flag }} {{ latest_location.city.country.name }}
-        </a>
-        <div class="text-xs text-gray-400 mt-1">{{ latest_location.created_at|date:"M d, Y" }}</div>
-    </div>
-    {% endif %}
-    </div>
+
+        <!-- Список всех стран для которых есть данные -->
         <div>
             <h2 class="text-xl font-semibold mb-4">Browse by country</h2>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
