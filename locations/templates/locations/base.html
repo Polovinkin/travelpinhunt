@@ -6,11 +6,88 @@
     <title>{% block title %}TravelPinHunt{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📍</text></svg>">
+<style>
+    .logo-text { 
+        transition: color 0.2s;
+        text-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+</style>
+<script>
+    const flags = [
+        { name: "France",      t: "#002395", p: "#FFFFFF", h: "#ED2939" },
+        { name: "Germany",     t: "#000000", p: "#DD0000", h: "#FFCE00" },
+        { name: "Italy",       t: "#009246", p: "#FFFFFF", h: "#CE2B37" },
+        { name: "Netherlands", t: "#AE1C28", p: "#FFFFFF", h: "#21468B" },
+        { name: "Russia",      t: "#FFFFFF", p: "#0039A6", h: "#D52B1E" },
+        { name: "Hungary",     t: "#CE2939", p: "#FFFFFF", h: "#477050" },
+        { name: "India",       t: "#FF9933", p: "#FFFFFF", h: "#138808" },
+        { name: "Colombia",    t: "#FCD116", p: "#003087", h: "#CE1126" },
+        { name: "Brazil",      t: "#009C3B", p: "#FFDF00", h: "#009C3B" },
+        { name: "Spain",       t: "#AA151B", p: "#F1BF00", h: "#AA151B" },
+        { name: "Argentina",   t: "#74ACDF", p: "#FFFFFF", h: "#74ACDF" },
+        { name: "Romania",     t: "#002B7F", p: "#FCD116", h: "#CE1126" },
+        { name: "Belgium",     t: "#000000", p: "#FAE042", h: "#EF3340" },
+        { name: "Kazakhstan",  t: "#00AFCA", p: "#FFDD00", h: "#00AFCA" },
+        { name: "Azerbaijan",  t: "#0092BC", p: "#EF3340", h: "#509E2F" },
+        { name: "Lithuania",   t: "#FDB913", p: "#006A44", h: "#C1272D" },
+        { name: "Estonia",     t: "#0072CE", p: "#000000", h: "#FFFFFF" },
+        { name: "Turkey",       t: "#E30A17", p: "#FFFFFF", h: "#E30A17" },
+        { name: "Saudi Arabia", t: "#006C35", p: "#FFFFFF", h: "#006C35" },
+        { name: "Switzerland",  t: "#FF0000", p: "#FFFFFF", h: "#FF0000" },
+        { name: "Sweden",       t: "#006AA7", p: "#FECC02", h: "#006AA7" },
+        { name: "Luxembourg",   t: "#EF3340", p: "#FFFFFF", h: "#00A3E0" },
+        { name: "Japan",        t: "#FFFFFF", p: "#BC002D", h: "#FFFFFF" },
+        { name: "South Africa", t: "#007A4D", p: "#FFB81C", h: "#001489" },
+        { name: "Kenya",        t: "#006600", p: "#CC0001", h: "#000000" },
+        { name: "Ethiopia",     t: "#078930", p: "#FCDD09", h: "#DA121A" },
+        { name: "Morocco",      t: "#C1272D", p: "#006233", h: "#C1272D" },
+        { name: "Tanzania",     t: "#1EB53A", p: "#FCD116", h: "#00A3DD" },
+        { name: "Uzbekistan",   t: "#1EB53A", p: "#FFFFFF", h: "#009FE3" },
+        { name: "Kyrgyzstan",   t: "#E8112D", p: "#FFE800", h: "#E8112D" },
+        { name: "Jamaica",            t: "#000000", p: "#00A551", h: "#FED100" },
+        { name: "Trinidad & Tobago",  t: "#CE1126", p: "#000000", h: "#CE1126" },
+        { name: "Bahamas",            t: "#00778B", p: "#FFC72C", h: "#00778B" },
+        { name: "Barbados",           t: "#00267F", p: "#FFC726", h: "#00267F" },
+    ];
+
+    let currentFlag = null;
+
+
+    function applyFlag(flag) {
+        document.querySelector('.logo-t').style.color = flag.t;
+        document.querySelector('.logo-p').style.color = flag.p;
+        document.querySelector('.logo-h').style.color = flag.h;
+    }
+
+    function resetLogo() {
+            ['logo-t', 'logo-p', 'logo-h'].forEach(cls => {
+                document.querySelector('.' + cls).style.color = '';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const link = document.querySelector('.logo-link');
+            let lastIndex = -1;
+
+            link.addEventListener('mouseenter', function() {
+                let index;
+                do {
+                    index = Math.floor(Math.random() * flags.length);
+                } while (index === lastIndex);
+                lastIndex = index;
+                applyFlag(flags[index]);
+            });
+
+            link.addEventListener('mouseleave', resetLogo);
+        });
+</script>
 </head>
 <body class="bg-gray-50 text-gray-900 min-h-screen">
     <header class="bg-white border-b border-gray-200 px-6 py-4">
         <div class="flex items-center justify-between max-w-4xl mx-auto px-6">
-            <a href="/" class="text-xl font-bold tracking-tight text-amber-800">TravelPinHunt 📍</a>
+            <a href="/" class="logo-link text-xl font-bold tracking-tight">
+                <span class="logo-t logo-text text-amber-800">Travel</span><span class="logo-p logo-text text-amber-800">Pin</span><span class="logo-h logo-text text-amber-800">Hunt</span> 📍
+            </a>
             <nav class="flex gap-6 text-sm text-gray-600 items-center">
                 <a href="/about/" class="text-amber-700 hover:text-amber-800 font-bold transition">About</a>
                 <a href="/submit/" class="bg-amber-800 text-white px-4 py-2 rounded-lg hover:bg-amber-900 transition font-bold">
