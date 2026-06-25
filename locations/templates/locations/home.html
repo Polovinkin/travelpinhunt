@@ -84,13 +84,16 @@
             <div class="text-3xl font-bold text-amber-800">{{ country_count }}</div>
             <div class="text-sm text-gray-500 mt-1">Countries</div>
         </div>
-        {% if latest_location %}
-        <div class="bg-white border border-gray-200 rounded-xl p-5 text-center flex flex-col items-center justify-center">
-            <div class="text-xs text-gray-400 uppercase tracking-wide mb-1">Last added</div>
-            <div class="text-sm font-medium text-gray-700">{{ latest_location.city.name }}, {{ latest_location.city.country.flag }} {{ latest_location.city.country.name }}</div>
-            <div class="text-xs text-gray-400 mt-1">{{ latest_location.created_at|date:"M d, Y" }}</div>
-        </div>
-        {% endif %}
+    {% if latest_location %}
+    <div class="bg-white border border-gray-200 rounded-xl p-5 text-center flex flex-col items-center justify-center">
+        <div class="text-xs text-gray-400 uppercase tracking-wide mb-1">Last added</div>
+        <a href="/{{ latest_location.city.country.slug }}/{{ latest_location.city.slug }}/" 
+        class="text-sm font-medium text-amber-800 hover:underline">
+            {{ latest_location.city.name }}, {{ latest_location.city.country.flag }} {{ latest_location.city.country.name }}
+        </a>
+        <div class="text-xs text-gray-400 mt-1">{{ latest_location.created_at|date:"M d, Y" }}</div>
+    </div>
+    {% endif %}
     </div>
         <div>
             <h2 class="text-xl font-semibold mb-4">Browse by country</h2>
