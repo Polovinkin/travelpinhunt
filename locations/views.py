@@ -6,8 +6,16 @@ def home(request):
     countries = Country.objects.filter(
         cities__locations__isnull=False
     ).distinct().order_by("name")
+
     query = request.GET.get("q", "").strip()
     results = []
+    
+    latest_location = Location.objects.select_related(
+        "city", "city__country"
+    ).order_by("-created_at").first()
+
+    location_count = Location.objects.count()
+    country_count = countries.count()
     
     if query:
         cities = City.objects.filter(
@@ -28,6 +36,9 @@ def home(request):
         "countries": countries,
         "results": results,
         "query": query,
+        "latest_location": latest_location,
+        "location_count": location_count,
+        "country_count": country_count,
     })
 
 def about(request):

@@ -1,8 +1,12 @@
 {% extends "locations/base.html" %}
+{% load static %}
 
 {% block title %}About — TravelPinHunt{% endblock %}
 
 {% block content %}
+    <img src="{% static 'images/pins_banner_2000x400.webp' %}" alt="Travel pins collection"
+        class="w-full rounded-2xl object-cover mb-10" style="max-height: 400px;">
+
     <div class="max-w-1xl">
         <h1 class="text-3xl font-bold mb-6">About TravelPinHunt</h1>
         
