@@ -1,7 +1,7 @@
 # Настройка встроенной админки Django. Регистрирую модели, настраиваю как они выглядят и редактируются в /admin.
 from django.contrib import admin
 from django import forms
-from .models import Country, City, PinType, Location
+from .models import Country, City, PinType, Location, LocationSubmission
 from django.utils.text import slugify
 
 
@@ -127,3 +127,13 @@ class LocationAdmin(admin.ModelAdmin):
 @admin.register(PinType)
 class PinTypeAdmin(admin.ModelAdmin):
     list_display = ["name"]
+
+
+# LOCATION SUBMISSION BY USERS
+@admin.register(LocationSubmission)
+class LocationSubmissionAdmin(admin.ModelAdmin):
+    list_display = ["location_name", "city_name", "country_name", "status", "created_at"]
+    list_filter = ["status", "has_city_pins", "has_country_pins", "has_place_pins"]
+    search_fields = ["location_name", "city_name", "country_name"]
+    readonly_fields = ["created_at"]
+    list_editable = ["status"]

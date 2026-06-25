@@ -1,6 +1,8 @@
 # Логика страниц. Каждая функция получает запрос, достаёт данные из БД и возвращает HTML. Мозг приложения.
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Country, City, Location
+from .forms import LocationSubmissionForm
+from django.views.decorators.cache import never_cache
 
 def home(request):
     countries = Country.objects.filter(
@@ -54,3 +56,19 @@ def city_detail(request, country_slug, city_slug):
     city = get_object_or_404(City, slug=city_slug, country=country)
     locations = Location.objects.filter(city=city)
     return render(request, "locations/city_detail.html", {"city": city, "locations": locations})
+
+@never_cache
+def submit_location(request):
+    if request.method == "POST":
+        form = LocationSubmissionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("locations:submit_success")
+    else:
+        form = LocationSubmissionForm()
+    
+    return render(request, "locations/submit_location.html", {"form": form})
+
+@never_cache
+def submit_success(request):
+    return render(request, "locations/submit_success.html")

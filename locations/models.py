@@ -77,3 +77,43 @@ class Location(models.Model):
 
     def __str__(self):
         return f"{self.name} — {self.city.name}"
+
+
+# МОДЕЛЬ ДЛЯ ДОБАВЛЕНИЯ ЛОКАЦИИ ЮЗЕРАМИ
+class LocationSubmission(models.Model):
+    PENDING = "pending"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+
+    STATUS_CHOICES = [
+        (PENDING, "Pending"),
+        (APPROVED, "Approved"),
+        (REJECTED, "Rejected"),
+    ]
+
+    # Location info
+    country_name = models.CharField(max_length=100, help_text="Country name in English")
+    city_name = models.CharField(max_length=100, help_text="City name in English")
+    location_name = models.CharField(max_length=200, help_text="Name of the shop or place")
+    google_maps_url = models.URLField(max_length=500, help_text="Link to Google Maps")
+    description = models.TextField(help_text="Description of the place and what pins are available")
+    photo_url = models.URLField(blank=True, help_text="Link to a photo of the pins (optional)")
+
+    # Pin types
+    has_city_pins = models.BooleanField(default=False)
+    has_country_pins = models.BooleanField(default=False)
+    has_place_pins = models.BooleanField(default=False)
+
+    # Submitter info
+    submitter_email = models.EmailField(blank=True, help_text="Your email (optional)")
+
+    # Status
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
+    created_at = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True, help_text="Internal notes for review")
+
+    def __str__(self):
+        return f"{self.location_name} — {self.city_name}, {self.country_name}"
+
+    class Meta:
+        ordering = ["-created_at"]

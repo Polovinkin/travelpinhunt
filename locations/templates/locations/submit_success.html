@@ -1,0 +1,20 @@
+{% extends "locations/base.html" %}
+
+{% block title %}Thanks! — TravelPinHunt{% endblock %}
+
+{% block content %}
+    <div class="max-w-lg text-center mx-auto py-16">
+        <div class="text-6xl mb-6">🥳🤩📍</div>
+        <h1 class="text-3xl font-bold mb-3">Thanks a lot, we received your submission!</h1>
+        <p class="text-gray-500 mb-2">You've just made travel pin collecting a bit easier for others, that's very cool and kind of you!</p>
+        <p class="text-gray-500 mb-8">We are reviewing all locations submitted every other day - if it looks good it will be added it to the database.</p>
+        <div class="flex gap-4 justify-center">
+            <a href="/" class="bg-amber-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-amber-900 transition">
+                Back home
+            </a>
+            <a href="/submit/" class="bg-amber-800 text-white px-6 py-3 rounded-lg font-medium hover:bg-amber-900 transition">
+                Add another location?
+            </a>
+        </div>
+    </div>
+{% endblock %}
