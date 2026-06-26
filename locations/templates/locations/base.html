@@ -7,8 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📍</text></svg>">
 <style>
-    .logo-text { 
-        transition: color 0.2s;
+    .logo-text {
+        transition: color 0.25s;
         text-shadow: 0 0 20px rgba(0,0,0,0.1);
     }
 </style>
@@ -73,15 +73,34 @@
     // Для белых цветов добавляет тень чтобы текст был виден на белом фоне
     function applyFlag(flag) {
         const shadow = "0 1px 3px rgba(0,0,0,0.3)";
-        ['t', 'p', 'h'].forEach(part => {
-            const el = document.querySelector('.logo-' + part);
-            el.style.color = flag[part];
-            el.style.textShadow = (flag[part] === '#FFFFFF' || flag[part] === '#F0F0F0') ? shadow : '';
+        ['t', 'p', 'h'].forEach((part, index) => {
+            setTimeout(() => {
+                const el = document.querySelector('.logo-' + part);
+                el.style.color = flag[part];
+                el.style.textShadow = (flag[part] === '#FFFFFF' || flag[part] === '#F0F0F0') ? shadow : '';
+            }, index * 80); // волна: 0ms → 80ms → 160ms
         });
     }
 
     document.addEventListener('DOMContentLoaded', function() {
         let lastIndex = -1;
+
+        // Применяет флаг мгновенно, без анимации (для первоначальной загрузки)
+        function applyFlagInstant(flag) {
+            const shadow = "0 1px 3px rgba(0,0,0,0.3)";
+            ['t', 'p', 'h'].forEach(part => {
+                const el = document.querySelector('.logo-' + part);
+                el.style.transition = 'none';
+                el.style.color = flag[part];
+                el.style.textShadow = (flag[part] === '#FFFFFF' || flag[part] === '#F0F0F0') ? shadow : '';
+            });
+            // Возвращаем transition после применения цвета
+            setTimeout(() => {
+                ['t', 'p', 'h'].forEach(part => {
+                    document.querySelector('.logo-' + part).style.transition = '';
+                });
+            }, 50);
+        }
 
         function nextFlag() {
             let index;
@@ -96,13 +115,14 @@
         if (pageCountry) {
             const countryFlag = flags.find(f => f.name === pageCountry);
             if (countryFlag) {
-                applyFlag(countryFlag);
+                applyFlagInstant(countryFlag);
                 return; // не запускаем setInterval
             }
         }
 
         // На остальных страницах менять каждые 5 секунд
-        nextFlag();
+        applyFlagInstant(flags[Math.floor(Math.random() * flags.length)]);
+        lastIndex = -1;
         setInterval(nextFlag, 5000);
     });
 </script>
