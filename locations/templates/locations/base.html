@@ -109,15 +109,16 @@
 </head>
 
 <body class="bg-gray-50 text-gray-900 min-h-screen">
-    <header class="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-50">
-        <div class="flex items-center justify-between max-w-4xl mx-auto px-6">
-            <a href="/" class="logo-link text-2xl font-bold tracking-tight">
+    <header class="bg-white border-b border-gray-200 py-3 sm:py-4 sticky top-0 z-50">
+        <div class="flex items-center justify-between max-w-4xl mx-auto px-3 sm:px-6">
+            <a href="/" class="logo-link text-xl sm:text-2xl font-bold tracking-tight whitespace-nowrap">
                 <span class="logo-t logo-text text-amber-800">Travel</span><span class="logo-p logo-text text-amber-800">Pin</span><span class="logo-h logo-text text-amber-800">Hunt</span> 📍
             </a>
-            <nav class="flex gap-6 text-sm text-gray-600 items-center">
+            <nav class="flex gap-2 sm:gap-6 text-sm text-gray-600 items-center ml-3">
                 <a href="/about/" class="text-amber-700 hover:text-amber-800 font-bold transition">About</a>
-                <a href="/submit/" class="bg-amber-800 text-white px-4 py-2 rounded-lg hover:bg-amber-900 transition font-bold">
-                    + Submit location
+                <a href="/submit/" class="bg-amber-800 text-white px-2 py-1.5 sm:px-4 sm:py-2 rounded-lg hover:bg-amber-900 transition font-bold text-xs sm:text-sm whitespace-nowrap">
+                    <span class="sm:hidden">+ Submit</span>
+                    <span class="hidden sm:inline">+ Submit location</span>
                 </a>
             </nav>
         </div>
