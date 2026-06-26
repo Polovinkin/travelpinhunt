@@ -23,7 +23,7 @@ urlpatterns = [
 ]
 
 # заголовок самой админки в header
-admin.site.site_header = " TravelPinHunt Django Admin Panel"
+admin.site.site_header = " TPH Django Admin Panel"
 # название сайта во вкладке, что после |
 admin.site.site_title = "TPH Django Admin"
 # название главной страницы во вкладке
