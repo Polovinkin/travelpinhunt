@@ -42,7 +42,7 @@ class LocationSubmissionForm(forms.ModelForm):
                 "style": "padding-right: 58px",
             }),
             "google_maps_url": forms.URLInput(attrs={
-                "placeholder": "https://maps.app.goo.gl/... or https://www.google.com/maps/place/...",
+                "placeholder": "https://maps.app.goo.gl/...",
                 "maxlength": "500",
                 "class": INPUT_CLASS,
                 "style": "padding-right: 62px",
