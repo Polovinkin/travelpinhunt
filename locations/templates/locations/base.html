@@ -13,55 +13,60 @@
     }
 </style>
 
+<!-- Скрипт нужный для функционала по подстановке цвета флага при открытии страны -->
+<script>
+    const pageCountry = "{{ page_country_slug|default:'' }}";
+</script>
+
 <!-- Функционал для рандомных цветов флагов в заголовке сайта -->
 <script>
     // Список флагов с цветами для трёх частей названия: t=Travel, p=Pin, h=Hunt
-    const flags_list = [
+    const flags = [
         // Европа
-        { name: "France",       t: "#002395", p: "#FFFFFF", h: "#ED2939" },
-        { name: "Germany",      t: "#000000", p: "#DD0000", h: "#FFCE00" },
-        { name: "Italy",        t: "#009246", p: "#FFFFFF", h: "#CE2B37" },
-        { name: "Netherlands",  t: "#AE1C28", p: "#FFFFFF", h: "#21468B" },
-        { name: "Russia",       t: "#FFFFFF", p: "#0039A6", h: "#D52B1E" },
-        { name: "Hungary",      t: "#CE2939", p: "#FFFFFF", h: "#477050" },
-        { name: "Spain",        t: "#AA151B", p: "#F1BF00", h: "#AA151B" },
-        { name: "Romania",      t: "#002B7F", p: "#FCD116", h: "#CE1126" },
-        { name: "Belgium",      t: "#000000", p: "#FAE042", h: "#EF3340" },
-        { name: "Lithuania",    t: "#FDB913", p: "#006A44", h: "#C1272D" },
-        { name: "Estonia",      t: "#0072CE", p: "#000000", h: "#FFFFFF" },
-        { name: "Switzerland",  t: "#FF0000", p: "#FFFFFF", h: "#FF0000" },
-        { name: "Bosnia",       t: "#002395", p: "#FFFFFF", h: "#FFCE00" },
-        { name: "Sweden",       t: "#006AA7", p: "#FECC02", h: "#006AA7" },
-        { name: "Luxembourg",   t: "#EF3340", p: "#FFFFFF", h: "#00A3E0" },
-        { name: "Greece",       t: "#0D5EAF", p: "#FFFFFF", h: "#0D5EAF" },
-        { name: "Bulgaria",     t: "#FFFFFF", p: "#00966E", h: "#D62612" },
-        { name: "Serbia",       t: "#C6363C", p: "#0C4076", h: "#FFFFFF" },
+        { name: "france",        t: "#002395", p: "#FFFFFF", h: "#ED2939" },
+        { name: "germany",       t: "#000000", p: "#DD0000", h: "#FFCE00" },
+        { name: "italy",         t: "#009246", p: "#FFFFFF", h: "#CE2B37" },
+        { name: "netherlands",   t: "#AE1C28", p: "#FFFFFF", h: "#21468B" },
+        { name: "russia",        t: "#FFFFFF", p: "#0039A6", h: "#D52B1E" },
+        { name: "hungary",       t: "#CE2939", p: "#FFFFFF", h: "#477050" },
+        { name: "spain",         t: "#AA151B", p: "#F1BF00", h: "#AA151B" },
+        { name: "romania",       t: "#002B7F", p: "#FCD116", h: "#CE1126" },
+        { name: "belgium",       t: "#000000", p: "#FAE042", h: "#EF3340" },
+        { name: "lithuania",     t: "#FDB913", p: "#006A44", h: "#C1272D" },
+        { name: "estonia",       t: "#0072CE", p: "#000000", h: "#FFFFFF" },
+        { name: "switzerland",   t: "#FF0000", p: "#FFFFFF", h: "#FF0000" },
+        { name: "bosnia-and-herzegovina", t: "#002395", p: "#FFFFFF", h: "#FFCE00" },
+        { name: "sweden",        t: "#006AA7", p: "#FECC02", h: "#006AA7" },
+        { name: "luxembourg",    t: "#EF3340", p: "#FFFFFF", h: "#00A3E0" },
+        { name: "greece",        t: "#0D5EAF", p: "#FFFFFF", h: "#0D5EAF" },
+        { name: "bulgaria",      t: "#FFFFFF", p: "#00966E", h: "#D62612" },
+        { name: "serbia",        t: "#C6363C", p: "#0C4076", h: "#FFFFFF" },
         // Азия
-        { name: "India",        t: "#FF9933", p: "#FFFFFF", h: "#138808" },
-        { name: "Kazakhstan",   t: "#00AFCA", p: "#FFDD00", h: "#00AFCA" },
-        { name: "Japan",        t: "#FFFFFF", p: "#BC002D", h: "#FFFFFF" },
-        { name: "Uzbekistan",   t: "#1EB53A", p: "#FFFFFF", h: "#009FE3" },
-        { name: "Kyrgyzstan",   t: "#E8112D", p: "#FFE800", h: "#E8112D" },
-        { name: "Bhutan",       t: "#FFD700", p: "#FFFFFF", h: "#FF8000" },
-        { name: "China",        t: "#FFDE00", p: "#DE2910", h: "#DE2910" },
+        { name: "india",         t: "#FF9933", p: "#FFFFFF", h: "#138808" },
+        { name: "kazakhstan",    t: "#00AFCA", p: "#FFDD00", h: "#00AFCA" },
+        { name: "japan",         t: "#FFFFFF", p: "#BC002D", h: "#FFFFFF" },
+        { name: "uzbekistan",    t: "#1EB53A", p: "#FFFFFF", h: "#009FE3" },
+        { name: "kyrgyzstan",    t: "#E8112D", p: "#FFE800", h: "#E8112D" },
+        { name: "bhutan",        t: "#FFD700", p: "#FFFFFF", h: "#FF8000" },
+        { name: "china",         t: "#FFDE00", p: "#DE2910", h: "#DE2910" },
         // Америки и Карибы
-        { name: "Colombia",     t: "#FCD116", p: "#003087", h: "#CE1126" },
-        { name: "Brazil",       t: "#009C3B", p: "#FFDF00", h: "#009C3B" },
-        { name: "Argentina",    t: "#74ACDF", p: "#FFFFFF", h: "#74ACDF" },
-        { name: "Jamaica",      t: "#000000", p: "#00A551", h: "#FED100" },
-        { name: "Bahamas",      t: "#00778B", p: "#FFC72C", h: "#00778B" },
-        { name: "Barbados",     t: "#00267F", p: "#FFC726", h: "#00267F" },
+        { name: "colombia",      t: "#FCD116", p: "#003087", h: "#CE1126" },
+        { name: "brazil",        t: "#009C3B", p: "#FFDF00", h: "#009C3B" },
+        { name: "argentina",     t: "#74ACDF", p: "#FFFFFF", h: "#74ACDF" },
+        { name: "jamaica",       t: "#000000", p: "#00A551", h: "#FED100" },
+        { name: "bahamas",       t: "#00778B", p: "#FFC72C", h: "#00778B" },
+        { name: "barbados",      t: "#00267F", p: "#FFC726", h: "#00267F" },
         // Ближний восток и рядом
-        { name: "Turkey",       t: "#E30A17", p: "#FFFFFF", h: "#E30A17" },
-        { name: "Saudi Arabia", t: "#006C35", p: "#FFFFFF", h: "#006C35" },
-        { name: "Qatar",        t: "#FFFFFF", p: "#8D1B3D", h: "#8D1B3D" },
-        { name: "Armenia",      t: "#D90012", p: "#0033A0", h: "#F2A800" },
+        { name: "turkey",        t: "#E30A17", p: "#FFFFFF", h: "#E30A17" },
+        { name: "saudi-arabia",  t: "#006C35", p: "#FFFFFF", h: "#006C35" },
+        { name: "qatar",         t: "#FFFFFF", p: "#8D1B3D", h: "#8D1B3D" },
+        { name: "armenia",       t: "#D90012", p: "#0033A0", h: "#F2A800" },
         // Африка
-        { name: "South Africa", t: "#007A4D", p: "#FFB81C", h: "#001489" },
-        { name: "Kenya",        t: "#006600", p: "#CC0001", h: "#000000" },
-        { name: "Ethiopia",     t: "#078930", p: "#FCDD09", h: "#DA121A" },
-        { name: "Morocco",      t: "#C1272D", p: "#006233", h: "#C1272D" },
-        { name: "Tanzania",     t: "#1EB53A", p: "#FCD116", h: "#00A3DD" },
+        { name: "south-africa",  t: "#007A4D", p: "#FFB81C", h: "#001489" },
+        { name: "kenya",         t: "#006600", p: "#CC0001", h: "#000000" },
+        { name: "ethiopia",      t: "#078930", p: "#FCDD09", h: "#DA121A" },
+        { name: "morocco",       t: "#C1272D", p: "#006233", h: "#C1272D" },
+        { name: "tanzania",      t: "#1EB53A", p: "#FCD116", h: "#00A3DD" },
     ];
 
     // Применяет цвета выбранного флага к буквам заголовка
@@ -78,19 +83,26 @@
     document.addEventListener('DOMContentLoaded', function() {
         let lastIndex = -1;
 
-        // Выбирает случайный флаг из списка, исключая предыдущий
         function nextFlag() {
             let index;
             do {
-                index = Math.floor(Math.random() * flags_list.length);
+                index = Math.floor(Math.random() * flags.length);
             } while (index === lastIndex);
             lastIndex = index;
-            applyFlag(flags_list[index]);
+            applyFlag(flags[index]);
         }
 
-        // Применяет первый флаг сразу при загрузке страницы
+        // Если открыта страница страны — показать её флаг и не менять
+        if (pageCountry) {
+            const countryFlag = flags.find(f => f.name === pageCountry);
+            if (countryFlag) {
+                applyFlag(countryFlag);
+                return; // не запускаем setInterval
+            }
+        }
+
+        // На остальных страницах менять каждые 5 секунд
         nextFlag();
-        // Меняет флаг каждые 5 секунд
         setInterval(nextFlag, 5000);
     });
 </script>

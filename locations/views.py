@@ -56,7 +56,11 @@ def country_detail(request, country_slug):
     # 404 если страна не найдена
     country = get_object_or_404(Country, slug=country_slug)
     cities = City.objects.filter(country=country).order_by("name")
-    return render(request, "locations/country_detail.html", {"country": country, "cities": cities})
+    return render(request, "locations/country_detail.html", {
+        "country": country,
+        "cities": cities,
+        "page_country_slug": country.slug,
+    })
 
 
 def city_detail(request, country_slug, city_slug):
@@ -64,8 +68,11 @@ def city_detail(request, country_slug, city_slug):
     country = get_object_or_404(Country, slug=country_slug)
     city = get_object_or_404(City, slug=city_slug, country=country)
     locations = Location.objects.filter(city=city)
-    return render(request, "locations/city_detail.html", {"city": city, "locations": locations})
-
+    return render(request, "locations/city_detail.html", {
+        "city": city,
+        "locations": locations,
+        "page_country_slug": country.slug,
+    })
 
 @never_cache  # форма не должна кешироваться — иначе браузер может показать старые данные после сабмита
 def submit_location(request):
