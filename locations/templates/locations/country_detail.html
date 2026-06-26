@@ -34,6 +34,8 @@
                         {{ city.location_type }}
                     </span>
                 {% endif %}
+                <!-- Количество локаций в городе -->
+                <span class="ml-auto text-sm text-gray-400 font-normal">{{ city.location_count }}</span>
             </a>
         {% empty %}
             <!-- Заглушка если для страны ещё нет ни одного города -->

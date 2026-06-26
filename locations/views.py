@@ -2,6 +2,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Country, City, Location
 from .forms import LocationSubmissionForm
+from django.db.models import Count
 from django.views.decorators.cache import never_cache
 import requests
 from django.conf import settings
@@ -57,7 +58,7 @@ def about(request):
 def country_detail(request, country_slug):
     # 404 если страна не найдена
     country = get_object_or_404(Country, slug=country_slug)
-    cities = City.objects.filter(country=country).order_by("name")
+    cities = City.objects.filter(country=country).annotate(location_count=Count("locations")).order_by("name")
     return render(request, "locations/country_detail.html", {
         "country": country,
         "cities": cities,
