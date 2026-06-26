@@ -103,12 +103,12 @@ class LocationSubmission(models.Model):
     ]
 
     # Информация о месте
-    country_name = models.CharField(max_length=100, help_text="Country name in English")
+    country_name = models.CharField(max_length=30, help_text="Country name in English")
     city_name = models.CharField(max_length=100, help_text="City name in English")
-    location_name = models.CharField(max_length=200, help_text="Name of the shop or place")
+    location_name = models.CharField(max_length=100, help_text="Name of the shop or place")
     google_maps_url = models.URLField(max_length=500, help_text="Link to Google Maps")
     description = models.TextField(help_text="Description of the place and what pins are available")
-    photo_url = models.URLField(blank=True, help_text="Link to a photo of the pins (optional)")
+    photo_url = models.URLField(max_length=500, blank=True, help_text="Link to a photo of the pins (optional)")
 
     # Какие типы пинов продаются (булевы флаги, не FK — заявка не привязана к PinType напрямую)
     has_city_pins = models.BooleanField(default=False)
@@ -116,7 +116,7 @@ class LocationSubmission(models.Model):
     has_place_pins = models.BooleanField(default=False)
 
     # Контакт сабмиттера (опционально)
-    submitter_email = models.EmailField(blank=True, help_text="Your email (optional)")
+    submitter_email = models.EmailField(max_length=100, blank=True, help_text="Your email (optional)")
 
     # Статус модерации и служебные поля
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)

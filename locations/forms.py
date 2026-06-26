@@ -25,37 +25,45 @@ class LocationSubmissionForm(forms.ModelForm):
                 "autocomplete": "off",
                 "maxlength": "30",
                 "class": INPUT_CLASS,
+                "style": "padding-right: 50px",
             }),
             "city_name": forms.TextInput(attrs={
                 "placeholder": "e.g. Chiang Mai",
                 "autocomplete": "off",
                 "maxlength": "50",
                 "class": INPUT_CLASS,
+                "style": "padding-right: 55px",
             }),
             "location_name": forms.TextInput(attrs={
                 "placeholder": "e.g. Night Bazaar Souvenir Shop",
                 "autocomplete": "off",
                 "maxlength": "100",
                 "class": INPUT_CLASS,
+                "style": "padding-right: 58px",
             }),
             "google_maps_url": forms.URLInput(attrs={
-                "placeholder": "https://maps.app.goo.gl/...",
+                "placeholder": "https://maps.app.goo.gl/... or https://www.google.com/maps/place/...",
                 "maxlength": "500",
                 "class": INPUT_CLASS,
+                "style": "padding-right: 62px",
             }),
             "description": forms.Textarea(attrs={
-                "placeholder": "What pins are available here? Any useful details for fellow collectors.",
+                "placeholder": "What pins are available here? Please add any useful details for fellow collectors.",
                 "rows": 4,
                 "maxlength": "1000",
                 "class": TEXTAREA_CLASS,
             }),
             "photo_url": forms.URLInput(attrs={
-                "placeholder": "Link to a photo of the pins (Google Photos, Imgur, etc.)",
+                "placeholder": "Link to a photo of the pins sold there (Google Photos, Imgur, etc.)",
                 "class": INPUT_CLASS,
+                "maxlength": "500",
+                "style": "padding-right: 62px",
             }),
             "submitter_email": forms.EmailInput(attrs={
                 "placeholder": "your@email.com",
                 "class": INPUT_CLASS,
+                "maxlength": "100",
+                "style": "padding-right: 59px",
             }),
         }
         labels = {
