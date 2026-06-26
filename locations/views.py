@@ -3,6 +3,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Country, City, Location
 from .forms import LocationSubmissionForm
 from django.views.decorators.cache import never_cache
+import requests
+from django.conf import settings
 
 
 def home(request):
@@ -78,13 +80,39 @@ def city_detail(request, country_slug, city_slug):
 def submit_location(request):
     if request.method == "POST":
         form = LocationSubmissionForm(request.POST)
-        if form.is_valid():
+
+        # Проверяем Turnstile токен через Cloudflare API
+        token = request.POST.get('cf-turnstile-response', '')
+        turnstile_ok = False
+        if token:
+            try:
+                cf_response = requests.post(
+                    'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+                    data={
+                        'secret': settings.TURNSTILE_SECRET_KEY,
+                        'response': token,
+                        'remoteip': request.META.get('REMOTE_ADDR'),
+                    },
+                    timeout=5,
+                )
+                turnstile_ok = cf_response.json().get('success', False)
+            except requests.RequestException:
+                turnstile_ok = False
+
+        if form.is_valid() and turnstile_ok:
             form.save()
             return redirect("locations:submit_success")
+
+        if not turnstile_ok:
+            form.add_error(None, 'Captcha check failed. Please try again.')
+
     else:
         form = LocationSubmissionForm()
 
-    return render(request, "locations/submit_location.html", {"form": form})
+    return render(request, "locations/submit_location.html", {
+        "form": form,
+        "TURNSTILE_SITE_KEY": settings.TURNSTILE_SITE_KEY,
+    })
 
 
 @never_cache  # аналогично — страница успеха не должна открываться повторно из кеша
