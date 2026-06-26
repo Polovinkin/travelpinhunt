@@ -1,6 +1,6 @@
 {% extends "locations/base.html" %}
 
-{% block title %}{{ country.flag }} {{ country.name }} — TravelPinHunt{% endblock %}
+{% block title %}Pins in {{ country.name }} — TravelPinHunt{% endblock %}
 
 {% block content %}
     <!-- Breadcrumb: ссылка назад на главную -->
@@ -12,7 +12,7 @@
     <div class="mb-8">
         <h1 class="text-3xl font-bold flex items-center gap-3">
             <span class="text-4xl">{{ country.flag }}</span>
-            {{ country.name }}
+            Pins in {{ country.name }}
         </h1>
         <p class="text-gray-500 mt-2">{{ cities|length }} city with pin locations</p>
     </div>
