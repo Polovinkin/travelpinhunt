@@ -6,16 +6,16 @@
 {% block content %}
     <!-- Баннер с фото коллекции пинов -->
     <img src="{% static 'images/pins_banner_2000x400.webp' %}" alt="Travel pins collection"
-        class="w-full rounded-2xl object-cover mb-10" style="max-height: 400px;">
+        class="w-full rounded-2xl object-cover mb-8" style="max-height: 400px;">
 
     <!-- Заголовок и подзаголовок сайта -->
-    <div class="mb-10">
+    <div class="mb-8">
         <h1 class="text-4xl font-bold mb-3">Find travel pins anywhere in the world</h1>
         <p class="text-gray-500 text-lg">Crowd-sourced collectors guide to buying travel pins worldwide</p>
     </div>
 
     <!-- Строка поиска по городам и странам -->
-    <form method="GET" action="/" class="mb-10">
+    <form method="GET" action="/" class="mb-8">
         <div class="flex gap-2">
             <input
                 type="text"
@@ -35,7 +35,7 @@
 
     {% if query %}
         <!-- Блок результатов поиска -->
-        <div class="mb-10">
+        <div class="mb-8">
             <h2 class="text-xl font-semibold mb-4">Search results for "{{ query }}"</h2>
 
             <!-- Найденные страны -->
@@ -86,7 +86,7 @@
 
         <!-- Три плитки со статистикой: кол-во локаций, стран, последнее добавление -->
         <h2 class="text-xl font-semibold mb-4">By the numbers</h2>
-        <div class="grid grid-cols-3 gap-4 mb-10">
+        <div class="grid grid-cols-3 gap-4 mb-8">
             <div class="bg-white border border-gray-200 rounded-xl p-5 text-center flex flex-col items-center justify-center">
                 <div class="text-3xl font-bold text-amber-800">{{ location_count }}</div>
                 <div class="text-sm text-gray-500 mt-1">Locations</div>
