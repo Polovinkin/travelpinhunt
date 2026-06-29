@@ -11,7 +11,7 @@
 
     <meta property="og:title" content="TravelPinHunt">
     <meta property="og:description" content="Find where to buy enamel travel pins around the world">
-    <meta property="og:image" content="https://travelpinhunt.com/static/img/og-image.png">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'tph_banner.png' %}">
     <meta property="og:url" content="https://travelpinhunt.com">
     <meta property="og:type" content="website">
 <style>
