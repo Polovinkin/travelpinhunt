@@ -3,6 +3,31 @@
 
 {% block title %}Pins in {{ city.name }}, {{ city.country.name }} — TravelPinHunt{% endblock %}
 
+{% block meta_description %}Find shops selling enamel travel pins in {{ city.name }}, {{ city.country.name }}. Community-sourced locations with Google Maps links.{% endblock %}
+
+{% block og_tags %}
+<meta property="og:title" content="Pins in {{ city.name }}, {{ city.country.name }} — TravelPinHunt">
+<meta property="og:site_name" content="TravelPinHunt">
+<meta property="og:description" content="Find shops selling enamel travel pins in {{ city.name }}, {{ city.country.name }}. Community-sourced locations with Google Maps links.">
+<meta property="og:url" content="https://travelpinhunt.com/{{ city.country.slug }}/{{ city.slug }}/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://travelpinhunt.com/static/tph_banner_1600.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="840">
+<meta property="og:image:alt" content="Enamel pin shops in {{ city.name }}, {{ city.country.name }}">
+<meta property="og:image" content="https://travelpinhunt.com/static/tph_banner_square_900.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="900">
+<meta property="og:image:height" content="900">
+<meta property="og:image:alt" content="Enamel pin shops in {{ city.name }}, {{ city.country.name }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pins in {{ city.name }}, {{ city.country.name }} — TravelPinHunt">
+<meta name="twitter:description" content="Find shops selling enamel travel pins in {{ city.name }}, {{ city.country.name }}. Community-sourced locations with Google Maps links.">
+<meta name="twitter:image" content="https://travelpinhunt.com/static/tph_banner_1600.jpg">
+<meta name="twitter:image:alt" content="Enamel pin shops in {{ city.name }}, {{ city.country.name }}">
+{% endblock %}
+
 {% block content %}
     <!-- Breadcrumb: ссылка назад на страницу страны -->
     <a href="/{{ city.country.slug }}/" class="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1 mb-6">

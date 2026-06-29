@@ -9,15 +9,35 @@
     <link rel="icon" href="{% static 'tph_logo_512.webp' %}">
     <link rel="apple-touch-icon" href="{% static 'apple-touch-icon.png' %}">
 
-    <meta property="og:title" content="TravelPinHunt">
+    <!-- SEO description -->
+    <meta name="description" content="{% block meta_description %}Crowd-sourced map of shops selling enamel travel pins around the world. Search by country or city.{% endblock %}">
+
+    <!-- Open Graph + Twitter Card -->
+    {% block og_tags %}
+    <meta property="og:title" content="TravelPinHunt — Find Enamel Pin Shops Worldwide">
     <meta property="og:site_name" content="TravelPinHunt">
-    <meta property="og:description" content="Find where to buy enamel travel pins around the world">
-    <!-- <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'tph_banner_1600.png' %}"> -->
-    <meta property="og:image" content="https://travelpinhunt.com/static/tph_banner_1600.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:url" content="https://travelpinhunt.com">
+    <meta property="og:description" content="Crowd-sourced map of shops selling enamel travel pins around the world. Search by country or city.">
+    <meta property="og:url" content="https://travelpinhunt.com/">
     <meta property="og:type" content="website">
+    <!-- Wide banner (2752×1444) — preferred by Facebook, LinkedIn, Telegram -->
+    <meta property="og:image" content="https://travelpinhunt.com/static/tph_banner_1600.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1600">
+    <meta property="og:image:height" content="840">
+    <meta property="og:image:alt" content="TravelPinHunt — Find enamel pin shops worldwide">
+    <!-- Square banner (900×900) — fallback for WhatsApp and platforms that prefer square -->
+    <meta property="og:image" content="https://travelpinhunt.com/static/tph_banner_square_900.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="900">
+    <meta property="og:image:height" content="900">
+    <meta property="og:image:alt" content="TravelPinHunt — Find enamel pin shops worldwide">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TravelPinHunt — Find Enamel Pin Shops Worldwide">
+    <meta name="twitter:description" content="Crowd-sourced map of shops selling enamel travel pins around the world. Search by country or city.">
+    <meta name="twitter:image" content="https://travelpinhunt.com/static/tph_banner_1600.jpg">
+    <meta name="twitter:image:alt" content="TravelPinHunt — Find enamel pin shops worldwide">
+    {% endblock %}
 <style>
     .logo-text {
         transition: color 0.25s;
