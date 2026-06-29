@@ -64,6 +64,7 @@ class LocationSubmissionForm(forms.ModelForm):
                 "class": INPUT_CLASS,
                 "maxlength": "100",
                 "style": "padding-right: 59px",
+                "autocomplete": "email",
             }),
         }
         labels = {
