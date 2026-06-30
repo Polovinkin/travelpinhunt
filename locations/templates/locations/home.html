@@ -76,9 +76,14 @@
             <!-- Заглушка если поиск ничего не нашёл -->
             {% if not results.cities and not results.countries %}
                 <p class="text-gray-500">Oops, nothing found for "{{ query }}" — maybe try a different search?</p>
-                <p class="text-gray-500">This can also mean that we don't have data for the location you are looking for, yet! :C</p>
-                <p class="text-gray-500">If you know where to buy pins there (or anywhere) - you can contrubite by adding information.</p>
-            {% endif %}
+                <p class="text-gray-500">But it's likely we just don't have data about pin selling shops for the location you are looking for, yet!</p>
+                <p class="text-gray-500">If you know where to buy pins there (or anywhere really) - you can contribute!</p>
+                <div class="text-center mt-4">
+                    <a href="/submit/" class="inline-block bg-amber-800 text-white px-6 py-3 rounded-lg hover:bg-amber-900 transition font-bold text-base">
+                        + Add new location
+                    </a>
+                </div>
+                {% endif %}
         </div>
 
     {% else %}
