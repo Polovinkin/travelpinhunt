@@ -91,24 +91,22 @@
 
         <!-- Три плитки со статистикой: кол-во локаций, стран, последнее добавление -->
         <h2 class="text-xl font-semibold mb-4">By the numbers</h2>
-        <div class="grid grid-cols-3 gap-4 mb-8">
-            <div class="bg-white border border-gray-200 rounded-xl p-5 text-center flex flex-col items-center justify-center">
-                <div class="text-3xl font-bold text-amber-800">{{ location_count }}</div>
-                <div class="text-sm text-gray-500 mt-1">Locations</div>
+        <!-- На мобилке колонки не равны: первые две уже, третья (last added) вдвое шире под длинные названия городов. На десктопе (sm:) все три поровну -->
+        <div class="grid grid-cols-[1fr_1fr_2fr] sm:grid-cols-3 gap-2 sm:gap-4 mb-8">
+            <div class="bg-white border border-gray-200 rounded-xl p-3 sm:p-5 text-center flex flex-col items-center justify-center">
+                <div class="text-2xl sm:text-3xl font-bold text-amber-800">{{ location_count }}</div>
+                <div class="text-xs sm:text-sm text-gray-500 mt-1">Locations</div>
             </div>
-            <div class="bg-white border border-gray-200 rounded-xl p-5 text-center flex flex-col items-center justify-center">
-                <div class="text-3xl font-bold text-amber-800">{{ country_count }}</div>
-                <div class="text-sm text-gray-500 mt-1">Countries</div>
+            <div class="bg-white border border-gray-200 rounded-xl p-3 sm:p-5 text-center flex flex-col items-center justify-center">
+                <div class="text-2xl sm:text-3xl font-bold text-amber-800">{{ country_count }}</div>
+                <div class="text-xs sm:text-sm text-gray-500 mt-1">Countries</div>
             </div>
-            <!-- Плитка с последней добавленной локацией (если есть) -->
+            <!-- Плитка с последней добавленной локацией (если есть). Шире остальных на мобилке, поэтому название города помещается целиком (перенос на 2 строки при необходимости, без обрезания) -->
             {% if latest_location %}
-            <div class="bg-white border border-gray-200 rounded-xl p-5 text-center flex flex-col items-center justify-center">
-                <div class="text-xs text-gray-400 uppercase tracking-wide mb-1">Last added</div>
-                <a href="/{{ latest_location.city.country.slug }}/{{ latest_location.city.slug }}/" 
-                class="text-sm font-medium text-amber-800 hover:underline">
-                    {{ latest_location.city.name }}, {{ latest_location.city.country.flag }} {{ latest_location.city.country.name }}
-                </a>
-                <div class="text-xs text-gray-400 mt-1">{{ latest_location.created_at|date:"M d, Y" }}</div>
+            <div class="bg-white border border-gray-200 rounded-xl p-2 sm:p-5 text-center flex flex-col items-center justify-center overflow-hidden">
+                <div class="text-[9px] sm:text-xs text-gray-400 uppercase tracking-normal sm:tracking-wide mb-1 whitespace-nowrap">Last added</div>
+                <a href="/{{ latest_location.city.country.slug }}/{{ latest_location.city.slug }}/" class="w-full text-sm font-medium text-amber-800 hover:underline leading-tight">{{ latest_location.city.name }} {{ latest_location.city.country.flag }}</a>
+                <div class="text-[9px] sm:text-xs text-gray-400 mt-1 whitespace-nowrap">{{ latest_location.created_at|date:"M d, Y" }}</div>
             </div>
             {% endif %}
         </div>
