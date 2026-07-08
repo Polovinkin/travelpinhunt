@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 
@@ -22,9 +23,12 @@ urlpatterns = [
     path("", include("locations.urls")),
 ]
 
+# Префикс "DEV " виден во вкладке браузера только локально (DEBUG=True), чтобы не перепутать с продом
+_dev_prefix = "DEV " if settings.DEBUG else ""
+
 # заголовок самой админки в header
-admin.site.site_header = " TPH Django Admin Panel"
+admin.site.site_header = f"{_dev_prefix}TPH Django Admin Panel"
 # название сайта во вкладке, что после |
-admin.site.site_title = "TPH Django Admin"
+admin.site.site_title = f"{_dev_prefix}TPH Django Admin"
 # название главной страницы во вкладке
 admin.site.index_title = "Main Admin"

@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}TravelPinHunt{% endblock %}</title>
+    <!-- "DEV |" виден во вкладке браузера только локально (DEBUG=True), чтобы не перепутать с продом -->
+    <title>{% if IS_DEV %}DEV | {% endif %}{% block title %}TravelPinHunt{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="{% static 'tph_logo_512.webp' %}">
     <link rel="apple-touch-icon" href="{% static 'apple-touch-icon.png' %}">
@@ -256,6 +257,10 @@
         <div class="flex items-center justify-between max-w-4xl mx-auto px-6">
             <a href="/" class="logo-link text-2xl sm:text-2xl font-bold tracking-tight whitespace-nowrap leading-none flex items-center">
                 <span class="logo-t logo-text text-amber-800">Travel</span><span class="logo-p logo-text text-amber-800">Pin</span><span class="logo-h logo-text text-amber-800">Hunt</span>
+                <!-- Бейдж "DEV" — виден только когда DEBUG=True (локальная разработка), в проде на Railway DEBUG=False -->
+                {% if IS_DEV %}
+                    <span class="ml-2 text-[10px] font-bold uppercase tracking-wider bg-red-600 text-white px-1.5 py-0.5 rounded">Dev</span>
+                {% endif %}
             </a>
             <nav class="flex gap-4 sm:gap-6 text-sm text-gray-600 items-center ml-3">
                 <a href="/about/" class="text-amber-700 hover:text-amber-800 font-bold transition">About</a>

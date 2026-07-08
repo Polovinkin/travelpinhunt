@@ -1,0 +1,9 @@
+{% extends "admin/base_site.html" %}
+{% load admin_interface_tags i18n %}
+
+<!-- Переопределяем title, который в django-admin-interface строится из theme.title -->
+<!-- Добавляем префикс "DEV |" только локально (DEBUG=True), чтобы отличать вкладку от прода -->
+{% block title %}
+{% get_admin_interface_theme as theme %}
+{% if IS_DEV %}DEV | {% endif %}{% if title %}{{ title }} | {% endif %}{% if theme.title %}{% translate theme.title %}{% else %}{{ site_title|default:_('Django administration') }}{% endif %}
+{% endblock title %}
