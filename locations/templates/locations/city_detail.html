@@ -53,8 +53,21 @@
     <div class="flex flex-col gap-4">
         {% for location in locations %}
             <div class="bg-white border border-gray-200 rounded-xl p-5 overflow-hidden">
-                <!-- Кнопка Google Maps плавает вправо, текст её обтекает -->
-                {% if location.google_maps_url %}
+                <!-- Кнопка карт плавает вправо, текст её обтекает -->
+                <!-- В России Google Maps работает плохо, поэтому там показываем Яндекс.Карты вместо Google Maps -->
+                {% if city.country.code == "RU" %}
+                    {% if location.yandex_maps_url %}
+                        <a href="{{ location.yandex_maps_url }}" target="_blank"
+                           class="float-right ml-3 mb-2 text-sm bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 group">
+                            <img src="{% static 'images/yandex_maps_icon.svg' %}" class="h-4 w-auto"><span class="group-hover:underline"><span class="hidden sm:inline">Yandex </span>Maps</span>
+                        </a>
+                    {% elif location.google_maps_url %}
+                        <a href="{{ location.google_maps_url }}" target="_blank"
+                           class="float-right ml-3 mb-2 text-sm bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 group">
+                            <img src="{% static 'images/google_maps_icon_svg.png' %}" class="h-4 w-auto"><span class="group-hover:underline"><span class="hidden sm:inline">Google </span>Maps</span>
+                        </a>
+                    {% endif %}
+                {% elif location.google_maps_url %}
                     <a href="{{ location.google_maps_url }}" target="_blank"
                        class="float-right ml-3 mb-2 text-sm bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 group">
                         <img src="{% static 'images/google_maps_icon_svg.png' %}" class="h-4 w-auto"><span class="group-hover:underline"><span class="hidden sm:inline">Google </span>Maps</span>

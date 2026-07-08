@@ -81,6 +81,9 @@ class Location(models.Model):
     lat = models.DecimalField(max_digits=8, decimal_places=5, null=True, blank=True)   # широта
     lng = models.DecimalField(max_digits=9, decimal_places=5, null=True, blank=True)   # долгота
     google_maps_url = models.URLField(blank=True)
+    yandex_maps_url = models.URLField(
+        blank=True, help_text="Used instead of Google Maps for locations in Russia, where Google Maps works poorly"
+    )
     pin_types = models.ManyToManyField(PinType, blank=True)  # у одного места может быть несколько типов пинов
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

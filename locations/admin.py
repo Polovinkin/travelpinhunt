@@ -127,9 +127,22 @@ class LocationAdmin(admin.ModelAdmin):
         ("Meta", {"fields": ["created_at", "updated_at"]}),
     ]
 
+    def get_fieldsets(self, request, obj=None):
+        # поле yandex_maps_url нужно только для локаций в России, поэтому не показываем
+        # его в форме для всех остальных стран, чтобы не захламлять админку
+        fieldsets = super().get_fieldsets(request, obj)
+        if obj and obj.city.country.code == "RU":
+            fieldsets = [
+                (title, {**opts, "fields": (
+                    [*opts["fields"], "yandex_maps_url"] if title == "Location" else opts["fields"]
+                )})
+                for title, opts in fieldsets
+            ]
+        return fieldsets
+
     def get_queryset(self, request):
         # select_related избегает N+1: достаём локации сразу с их городами одним JOIN запросом
-        return super().get_queryset(request).select_related("city")
+        return super().get_queryset(request).select_related("city", "city__country")
 
 
 # --- PIN TYPES ---
