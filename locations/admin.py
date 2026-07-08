@@ -85,8 +85,16 @@ class LocationAdminForm(forms.ModelForm):
         model = Location
         fields = "__all__"
         exclude = ["lat", "lng"]  # скрываем сырые поля, координаты вводятся через поле coordinates выше
+        labels = {
+            "google_maps_url": "Google Maps URL",
+            "yandex_maps_url": "Yandex Maps URL",
+            "lat": "Latitude (auto)",
+            "lng": "Longitude (auto)",
+        }
         widgets = {
             "name": forms.TextInput(attrs={"autocomplete": "off"}),
+            "google_maps_url": forms.URLInput(attrs={"autocomplete": "off"}),
+            "yandex_maps_url": forms.URLInput(attrs={"autocomplete": "off"}),
         }
 
     def clean(self):
