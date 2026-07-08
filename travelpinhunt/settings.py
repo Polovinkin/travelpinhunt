@@ -134,6 +134,12 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+# Files here are served by WhiteNoise directly from the domain root
+# (e.g. /apple-touch-icon.png) — no hashing, no /static/ prefix.
+# iOS's Home Screen icon fetcher checks the root path regardless of the
+# <link rel="apple-touch-icon"> tag, so it needs to exist there too.
+WHITENOISE_ROOT = BASE_DIR / "root_static"
+
 STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
