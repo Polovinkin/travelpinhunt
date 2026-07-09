@@ -85,8 +85,8 @@ class Location(models.Model):
         blank=True, help_text="Used instead of Google Maps for locations in Russia, where Google Maps works poorly"
     )
     pin_types = models.ManyToManyField(PinType, blank=True)  # у одного места может быть несколько типов пинов
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at (UTC)")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated at (UTC)")
 
     def __str__(self):
         return f"{self.name} — {self.city.name}"
@@ -123,7 +123,7 @@ class LocationSubmission(models.Model):
 
     # Статус модерации и служебные поля
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at (UTC)")
     notes = models.TextField(blank=True, help_text="Internal notes for review")  # заметки для модератора
 
     def __str__(self):
