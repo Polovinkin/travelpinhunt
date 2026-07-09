@@ -43,20 +43,22 @@
         {% for city in cities %}
             <!-- Карточка-ссылка на страницу города -->
             <a href="/{{ country.slug }}/{{ city.slug }}/"
-            class="bg-white border border-gray-200 rounded-lg px-6 py-6 text-lg font-medium hover:border-amber-600 hover:shadow-sm transition flex items-center gap-2">
-                <!-- Звёздочка для столицы -->
+            class="relative bg-white border border-gray-200 rounded-lg px-4 py-5 sm:px-6 sm:py-6 text-lg font-medium hover:border-amber-600 hover:shadow-sm transition flex items-baseline justify-between gap-2">
+                <!-- Звёздочка столицы — маленькая, в левом верхнем углу карточки, не занимает место в строке названия -->
                 {% if city.is_capital %}
-                    <span title="Capital" class="text-amber-500 cursor-default">★</span>
+                    <span title="Capital" class="absolute top-1.5 left-1.5 text-sm leading-none text-amber-500 cursor-default">★</span>
                 {% endif %}
-                {{ city.name }}
-                <!-- Бейдж типа локации — например "Island", если это не обычный город -->
-                {% if city.location_type %}
-                    <span class="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-normal">
-                        {{ city.location_type }}
-                    </span>
-                {% endif %}
-                <!-- Количество локаций в городе -->
-                <span class="ml-auto text-sm text-gray-400 font-normal">{{ city.location_count }}</span>
+                <!-- Название + бейдж: бейдж присоединяется к строке названия, пока влезает, и переносится сам, если нет -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <span>{{ city.name }}</span>
+                    {% if city.location_type %}
+                        <span class="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-normal">
+                            {{ city.location_type }}
+                        </span>
+                    {% endif %}
+                </div>
+                <!-- Количество локаций — жёстко зафиксировано справа, на уровне названия, никогда не переносится -->
+                <span class="text-sm text-gray-400 font-normal shrink-0">{{ city.location_count }}</span>
             </a>
         {% empty %}
             <!-- Заглушка если для страны ещё нет ни одного города -->
