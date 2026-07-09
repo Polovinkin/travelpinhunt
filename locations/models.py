@@ -100,9 +100,9 @@ class LocationSubmission(models.Model):
     REJECTED = "rejected"
 
     STATUS_CHOICES = [
-        (PENDING, "Pending"),
-        (APPROVED, "Approved"),
-        (REJECTED, "Rejected"),
+        (PENDING, "🟡 Pending"),
+        (APPROVED, "✅ Approved"),
+        (REJECTED, "❌ Rejected"),
     ]
 
     # Информация о месте
