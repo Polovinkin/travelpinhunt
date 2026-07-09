@@ -198,7 +198,7 @@
     // Применяет цвета выбранного флага к буквам заголовка
     // Для белых цветов добавляет тень чтобы текст был виден на белом фоне
     function applyFlag(flag) {
-        const shadow = "0 1px 3px rgba(0,0,0,0.3)";
+        const shadow = "0 1px 3px rgba(0,0,0,0.45)";
         ['t', 'p', 'h'].forEach((part, index) => {
             setTimeout(() => {
                 const el = document.querySelector('.logo-' + part);
@@ -213,7 +213,7 @@
 
         // Применяет флаг мгновенно, без анимации (для первоначальной загрузки)
         function applyFlagInstant(flag) {
-            const shadow = "0 1px 3px rgba(0,0,0,0.3)";
+            const shadow = "0 1px 3px rgba(0,0,0,0.45)";
             ['t', 'p', 'h'].forEach(part => {
                 const el = document.querySelector('.logo-' + part);
                 el.style.transition = 'none';
