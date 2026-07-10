@@ -294,7 +294,7 @@ class LocationSubmissionAdminForm(forms.ModelForm):
 @admin.register(LocationSubmission)
 class LocationSubmissionAdmin(admin.ModelAdmin):
     form = LocationSubmissionAdminForm
-    list_display = ["location_name", "city_name", "country_name", "status", "created_at"]
+    list_display = ["location_name", "city_name", "country_name", "contributor_nickname", "status", "created_at"]
     list_filter = ["status", "has_city_pins", "has_country_pins", "has_place_pins"]
     search_fields = ["location_name", "city_name", "country_name"]
     readonly_fields = ["created_at", "pin_types_label", "create_location_link"]
