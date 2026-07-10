@@ -1,5 +1,11 @@
 {% extends "admin/base_site.html" %}
-{% load admin_interface_tags i18n %}
+{% load admin_interface_tags i18n static %}
+
+<!-- Общие CSS-правки для всей админки (не только для отдельных ModelAdmin через Media) -->
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin_custom.css' %}">
+{% endblock extrastyle %}
 
 <!-- Переопределяем title, который в django-admin-interface строится из theme.title -->
 <!-- Добавляем префикс "DEV |" только локально (DEBUG=True), чтобы отличать вкладку от прода -->

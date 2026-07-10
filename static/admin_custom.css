@@ -1,0 +1,42 @@
+/* Кастомные правки для стандартной Django-админки (не трогает публичный сайт) */
+
+/* по умолчанию у лейблов полей фиксированная ширина 160px (.aligned label) — из-за этого
+   между подписью и значением поля большой пустой отступ. Уменьшаем примерно в 1.5 раза. */
+.aligned label {
+    width: 120px;
+    min-width: 120px;
+}
+
+/* подсказки под полем (help text) были рассчитаны на отступ в 160px под старую ширину лейбла */
+form .aligned p.help,
+form .aligned div.help,
+form .aligned input + p.help,
+form .aligned textarea + p.help,
+form .aligned select + p.help,
+form .aligned input + div.help,
+form .aligned textarea + div.help,
+form .aligned select + div.help,
+form .aligned ul {
+    margin-left: 120px;
+}
+
+/* чекбоксы pin_types на странице локации — в одну строку вместо колонки.
+   В Django 5+/6 CheckboxSelectMultiple рендерится как <div id="id_pin_types"><div>...</div></div>,
+   а не как <ul><li>, поэтому таргетимся на div-структуру. */
+.field-pin_types #id_pin_types {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.field-pin_types #id_pin_types > div {
+    margin: 0;
+}
+
+/* readonly-лейбл "Pin types:" в форме заявки — по умолчанию readonly-поля не жирные,
+   а остальные лейблы жирные потому что required. Делаем визуально одинаково.
+   Важно: класс "field-pin_types_label" висит на всей строке (там же чекбоксы), а не только
+   на этом поле, поэтому таргетимся именно на его fieldBox — иначе жирными станут все лейблы в строке. */
+.fieldBox.field-pin_types_label label {
+    font-weight: bold;
+}

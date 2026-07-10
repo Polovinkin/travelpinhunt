@@ -1,6 +1,7 @@
 # Настройка встроенной админки Django. Регистрирую модели, настраиваю как они выглядят и редактируются в /admin.
 from django.contrib import admin
 from django import forms
+from django.db import models
 from .models import Country, City, PinType, Location, LocationSubmission
 from django.utils.text import slugify
 
@@ -93,8 +94,12 @@ class LocationAdminForm(forms.ModelForm):
         }
         widgets = {
             "name": forms.TextInput(attrs={"autocomplete": "off"}),
-            "google_maps_url": forms.URLInput(attrs={"autocomplete": "off"}),
-            "yandex_maps_url": forms.URLInput(attrs={"autocomplete": "off"}),
+            # class="vLargeTextField" — стандартный класс Django admin для текстовых полей,
+            # без него виджет теряет обычную ширину (48em)
+            "description": forms.Textarea(attrs={"rows": 7, "class": "vLargeTextField"}),
+            # одинаковая ширина для обеих ссылок — примерно половина страницы
+            "google_maps_url": forms.URLInput(attrs={"autocomplete": "off", "style": "width: 50%; max-width: 45em;"}),
+            "yandex_maps_url": forms.URLInput(attrs={"autocomplete": "off", "style": "width: 50%; max-width: 45em;"}),
         }
 
     def clean(self):
@@ -125,14 +130,13 @@ class LocationAdmin(admin.ModelAdmin):
     list_display = ["name", "city", "created_at"]
     search_fields = ["name", "description"]
     list_filter = ["pin_types"]
-    filter_horizontal = ["pin_types"]  # удобный двойной список для выбора типов пинов
     readonly_fields = ["lat", "lng", "created_at", "updated_at"]  # координаты редактируются только через поле coordinates
     autocomplete_fields = ["city"]
     fieldsets = [
-        (None, {"fields": ["city", "name", "description"]}),
-        ("Location", {"fields": ["google_maps_url", "coordinates", "lat", "lng"]}),
+        (None, {"fields": [("name", "city"), "description"]}),
+        ("Location", {"fields": ["google_maps_url", ("coordinates", "lat", "lng")]}),
         ("Pin types", {"fields": ["pin_types"]}),
-        ("Meta", {"fields": ["created_at", "updated_at"]}),
+        ("Meta", {"fields": [("created_at", "updated_at")]}),
     ]
 
     def get_fieldsets(self, request, obj=None):
@@ -152,6 +156,24 @@ class LocationAdmin(admin.ModelAdmin):
         # select_related избегает N+1: достаём локации сразу с их городами одним JOIN запросом
         return super().get_queryset(request).select_related("city", "city__country")
 
+    # эмодзи как на форме /submit/, только для отображения в этой форме — модель не трогаем
+    PIN_TYPE_EMOJI = {"city": "🏙️", "place": "🏛️", "country": "🌍"}
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        # простые чекбоксы вместо filter_horizontal — типов пинов всего 3, выбор
+        # такой же, как на форме /submit/
+        if db_field.name == "pin_types":
+            kwargs["widget"] = forms.CheckboxSelectMultiple()
+        formfield = super().formfield_for_manytomany(db_field, request, **kwargs)
+        if db_field.name == "pin_types":
+            formfield.label_from_instance = lambda obj: (
+                f"{self.PIN_TYPE_EMOJI.get(obj.name, '')} {obj}"
+            )
+        return formfield
+
+    class Media:
+        css = {"all": ["admin_custom.css"]}  # чекбоксы pin_types в одну строку
+
 
 # --- PIN TYPES ---
 
@@ -162,10 +184,62 @@ class PinTypeAdmin(admin.ModelAdmin):
 
 # --- SUBMISSIONS (заявки от пользователей) ---
 
+class LocationSubmissionAdminForm(forms.ModelForm):
+    """Кастомная форма заявки: эмодзи в лейблах чекбоксов совпадают с формой на /submit/"""
+
+    class Meta:
+        model = LocationSubmission
+        fields = "__all__"
+        labels = {
+            "google_maps_url": "Google Maps URL",
+            "photo_url": "Photo URL",
+            "has_city_pins": "🏙️ City pins",
+            "has_country_pins": "🌍 Country pins",
+            "has_place_pins": "🏛️ Place pins",
+        }
+        help_texts = {
+            "google_maps_url": "",  # и так понятно, подсказка из модели тут лишняя
+        }
+
+
 @admin.register(LocationSubmission)
 class LocationSubmissionAdmin(admin.ModelAdmin):
+    form = LocationSubmissionAdminForm
     list_display = ["location_name", "city_name", "country_name", "status", "created_at"]
     list_filter = ["status", "has_city_pins", "has_country_pins", "has_place_pins"]
     search_fields = ["location_name", "city_name", "country_name"]
-    readonly_fields = ["created_at"]
+    readonly_fields = ["created_at", "pin_types_label"]
     list_editable = ["status"]  # статус можно менять прямо в списке без захода в каждую запись
+    # явный порядок полей: description показывается раньше google_maps_url,
+    # а photo_url — после чекбоксов с типами пинов
+    # (в модели порядок другой, но так удобнее читать заявку при модерации)
+    fieldsets = [
+        (None, {"fields": [
+            ("location_name", "status"),  # кортеж = два поля в одной строке
+            ("country_name", "city_name"),
+            "description", "google_maps_url",
+            # pin_types_label — пустое readonly-поле, нужно только чтобы получить
+            # подпись "Pin types:" точно в том же стиле, что и у остальных полей
+            ("pin_types_label", "has_city_pins", "has_country_pins", "has_place_pins"),
+            "photo_url",
+            "submitter_email",
+        ]}),
+        ("Meta", {"fields": ["created_at", "notes"]}),
+    ]
+
+    def pin_types_label(self, obj):
+        return ""
+    pin_types_label.short_description = "Pin types"
+    formfield_overrides = {
+        models.TextField: {"widget": forms.Textarea(attrs={"rows": 4})},
+    }
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if db_field.name == "description":
+            # это поле шире остальных текстовых полей — так удобнее читать длинные описания
+            formfield.widget.attrs["style"] = "width: 150%; max-width: 150%;"
+        return formfield
+
+    class Media:
+        css = {"all": ["admin_custom.css"]}  # жирный лейбл "Pin types:"
