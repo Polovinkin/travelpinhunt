@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django import forms
 from django.db import models
-from .models import Country, City, PinType, Location, LocationSubmission
+from .models import Country, State, City, PinType, Location, LocationSubmission
 from django.utils.text import slugify
 
 
@@ -28,19 +28,28 @@ class HasLocationsFilter(admin.SimpleListFilter):
 
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
-    list_display = ["flag_display", "name", "code", "slug", "city_count", "location_count"]
+    list_display = ["flag_display", "name", "code", "slug", "city_count", "location_count", "has_states"]
     list_display_links = ["name"]  # кликабельным должно быть название, а не флаг
-    list_filter = [HasLocationsFilter]
+    list_filter = [HasLocationsFilter, "has_states"]
     search_fields = ["name", "code"]
     readonly_fields = ["slug"]  # slug генерируется автоматически из name, руками не редактируется
 
     def get_queryset(self, request):
         # annotate вместо obj.cities... в цикле — иначе на 100+ странах будет N+1 запросов.
         # distinct=True на обоих Count, потому что JOIN cities+locations размножает строки
-        return super().get_queryset(request).annotate(
+        qs = super().get_queryset(request).annotate(
             city_count_annotated=models.Count("cities", distinct=True),
             location_count_annotated=models.Count("cities__locations", distinct=True),
         )
+
+        # Автокомплит для поля State.country (виджет шлёт app_label/model_name/field_name
+        # текущего поля в GET) — показываем только страны с has_states=True, чтобы туда
+        # нельзя было по ошибке добавить штат стране без этого флага. На обычный список
+        # стран в самой Country admin это не влияет — там этих GET-параметров нет.
+        if request.GET.get("model_name") == "state" and request.GET.get("field_name") == "country":
+            qs = qs.filter(has_states=True)
+
+        return qs
 
     def flag_display(self, obj):
         # эмодзи флага для визуала в списке стран
@@ -59,10 +68,89 @@ class CountryAdmin(admin.ModelAdmin):
     location_count.admin_order_field = "location_count_annotated"
 
 
+# --- STATES ---
+
+class StateAdminForm(forms.ModelForm):
+    """Кастомная форма штата: запрещает добавить дубликат штата в ту же страну"""
+
+    class Meta:
+        model = State
+        fields = "__all__"
+        widgets = {
+            "name": forms.TextInput(attrs={"autocomplete": "off"}),
+            # без этого браузер предлагает автозаполнение из ранее введённых значений
+            # других полей "code" на сайте (например ISO-кодов стран) — сбивает с толку
+            "code": forms.TextInput(attrs={"autocomplete": "off"}),
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        country = cleaned_data.get("country")
+        name = cleaned_data.get("name")
+        slug = slugify(name) if name else ""
+
+        # проверяем уникальность по паре country+slug (не глобально)
+        if country and slug:
+            exists = State.objects.filter(country=country, slug=slug).exclude(pk=self.instance.pk).exists()
+            if exists:
+                self.add_error("name", f"Oops, {name} was already added to {country.name}!")
+
+        return cleaned_data
+
+
+@admin.register(State)
+class StateAdmin(admin.ModelAdmin):
+    form = StateAdminForm
+    list_display = ["name", "flag_display", "country", "code", "slug", "city_count"]
+    search_fields = ["name", "code"]
+    list_filter = ["country"]
+    readonly_fields = ["slug"]  # slug генерируется автоматически из name
+    autocomplete_fields = ["country"]  # поиск страны по названию вместо огромного дропдауна
+    fields = [
+        "country",
+        ("name", "code"),  # кортеж = два поля в одной строке
+        "slug",
+    ]
+
+    class Media:
+        # рисует эмодзи флага справа от поля Country и обновляет его при выборе страны
+        js = ["admin_country_flag.js"]
+
+    def get_queryset(self, request):
+        # select_related избегает N+1, annotate — чтобы не считать города в цикле
+        return super().get_queryset(request).select_related("country").annotate(
+            city_count_annotated=models.Count("cities", distinct=True),
+        )
+
+    def flag_display(self, obj):
+        return obj.country.flag
+    flag_display.short_description = "Flag"
+
+    def city_count(self, obj):
+        return obj.city_count_annotated
+    city_count.short_description = "Cities"
+    city_count.admin_order_field = "city_count_annotated"
+
+    def _country_flags_context(self):
+        # переиспользуем ту же логику и тот же JS, что и в CityAdmin — см. там подробный комментарий
+        import json
+        return {"country_flags_json": json.dumps({str(c.pk): c.flag for c in Country.objects.all()})}
+
+    def add_view(self, request, form_url="", extra_context=None):
+        extra_context = {**(extra_context or {}), **self._country_flags_context()}
+        return super().add_view(request, form_url, extra_context)
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        extra_context = {**(extra_context or {}), **self._country_flags_context()}
+        return super().change_view(request, object_id, form_url, extra_context)
+
+
 # --- CITIES ---
 
 class CityAdminForm(forms.ModelForm):
-    """Кастомная форма города: запрещает добавить дубликат города в ту же страну"""
+    """Кастомная форма города: требует штат для "штатных" стран (has_states=True),
+    запрещает штат для остальных, и проверяет дубликаты в правильном скоупе —
+    по штату (если есть) или по стране (если штатов нет)."""
 
     class Meta:
         model = City
@@ -74,39 +162,67 @@ class CityAdminForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         country = cleaned_data.get("country")
+        state = cleaned_data.get("state")
         name = cleaned_data.get("name")
         slug = slugify(name) if name else ""
 
-        # проверяем уникальность по паре country+slug (не глобально)
-        if country and slug:
-            exists = City.objects.filter(country=country, slug=slug).exclude(pk=self.instance.pk).exists()
+        if country and country.has_states:
+            if not state:
+                self.add_error("state", f"{country.name} requires a state — please select one.")
+            elif state.country_id != country.id:
+                self.add_error("state", "Selected state does not belong to the selected country.")
+        elif state:
+            # страна без штатов, но штат почему-то передан (например через devtools) — игнорируем
+            cleaned_data["state"] = None
+            state = None
+
+        # проверяем уникальность slug в правильном скоупе: по штату, если он есть, иначе по стране
+        if slug:
+            if state:
+                exists = City.objects.filter(state=state, slug=slug).exclude(pk=self.instance.pk).exists()
+                scope_name = state.name
+            elif country:
+                exists = City.objects.filter(country=country, slug=slug, state__isnull=True).exclude(pk=self.instance.pk).exists()
+                scope_name = country.name
+            else:
+                exists = False
+                scope_name = ""
             if exists:
-                self.add_error("name", f"Oops, {name} was already added to {country.name}!")
+                self.add_error("name", f"Oops, {name} was already added to {scope_name}!")
 
         return cleaned_data
 
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
     form = CityAdminForm
-    list_display = ["name", "flag_display", "country", "slug", "is_capital", "location_count"]
+    list_display = ["name", "flag_display", "country", "state", "slug", "is_capital", "location_count"]
     search_fields = ["name"]
     list_filter = ["country"]
     readonly_fields = ["slug"]  # slug генерируется автоматически из name
     autocomplete_fields = ["country"]  # поиск страны по названию вместо огромного дропдауна
     fields = [
         "country",
+        "state",  # поле видно только для стран с has_states=True — см. admin_city_state.js
         ("name", "is_capital"),  # кортеж = два поля в одной строке
         "location_type",
         "slug",
     ]
 
     class Media:
-        # рисует эмодзи флага справа от поля Country и обновляет его при выборе страны
-        js = ["admin_country_flag.js"]
+        # первый скрипт рисует флаг рядом с Country, второй — показывает/скрывает и
+        # заполняет поле State в зависимости от выбранной страны
+        js = ["admin_country_flag.js", "admin_city_state.js"]
 
     def get_queryset(self, request):
-        # select_related избегает N+1: достаём города сразу с их странами одним JOIN запросом
-        return super().get_queryset(request).select_related("country")
+        # select_related избегает N+1: достаём города сразу со страной и штатом одним JOIN запросом
+        return super().get_queryset(request).select_related("country", "state")
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "state":
+            # сортируем по стране, чтобы штаты одной страны шли подряд — так проще
+            # ориентироваться в исходном (до JS-фильтрации) списке опций
+            kwargs["queryset"] = State.objects.select_related("country").order_by("country__name", "name")
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def location_count(self, obj):
         # показывает сколько pin locations добавлено в этом городе
@@ -125,12 +241,25 @@ class CityAdmin(admin.ModelAdmin):
         import json
         return {"country_flags_json": json.dumps({str(c.pk): c.flag for c in Country.objects.all()})}
 
+    def _state_context(self):
+        # {country_id: True} для стран с has_states=True, и {country_id: [{id, name}, ...]}
+        # штатов этой страны — для JS, который показывает/скрывает и заполняет поле State.
+        import json
+        has_states_map = {str(pk): True for pk in Country.objects.filter(has_states=True).values_list("pk", flat=True)}
+        states_by_country = {}
+        for state in State.objects.select_related("country").order_by("name"):
+            states_by_country.setdefault(str(state.country_id), []).append({"id": state.pk, "name": state.name})
+        return {
+            "country_has_states_json": json.dumps(has_states_map),
+            "states_by_country_json": json.dumps(states_by_country),
+        }
+
     def add_view(self, request, form_url="", extra_context=None):
-        extra_context = {**(extra_context or {}), **self._country_flags_context()}
+        extra_context = {**(extra_context or {}), **self._country_flags_context(), **self._state_context()}
         return super().add_view(request, form_url, extra_context)
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
-        extra_context = {**(extra_context or {}), **self._country_flags_context()}
+        extra_context = {**(extra_context or {}), **self._country_flags_context(), **self._state_context()}
         return super().change_view(request, object_id, form_url, extra_context)
 
 
@@ -162,7 +291,8 @@ class LocationAdminForm(forms.ModelForm):
             "lng": "Longitude (auto)",
         }
         widgets = {
-            "name": forms.TextInput(attrs={"autocomplete": "off"}),
+            # ширина в 2 раза больше стандартной (vTextField ~20em) — имена локаций часто длинные
+            "name": forms.TextInput(attrs={"autocomplete": "off", "style": "width: 50%; max-width: 40em;"}),
             # class="vLargeTextField" — стандартный класс Django admin для текстовых полей,
             # без него виджет теряет обычную ширину (48em)
             "description": forms.Textarea(attrs={"rows": 7, "class": "vLargeTextField"}),
@@ -202,7 +332,7 @@ class LocationAdmin(admin.ModelAdmin):
     readonly_fields = ["lat", "lng", "created_at", "updated_at"]  # координаты редактируются только через поле coordinates
     autocomplete_fields = ["city"]
     fieldsets = [
-        (None, {"fields": [("name", "city"), "description"]}),
+        (None, {"fields": ["name", "city", "description"]}),
         ("Location", {"fields": ["google_maps_url", ("coordinates", "lat", "lng")]}),
         ("Pin types", {"fields": ["pin_types"]}),
         ("Meta", {"fields": [("created_at", "updated_at")]}),

@@ -11,5 +11,9 @@ urlpatterns = [
     path("submit/success/", views.submit_success, name="submit_success"),
     path("contributors/", views.contributors, name="contributors"),
     path("<slug:country_slug>/", views.country_detail, name="country_detail"),
-    path("<slug:country_slug>/<slug:city_slug>/", views.city_detail, name="city_detail"),
+    # Второй сегмент — либо штат (для стран с Country.has_states=True, например США),
+    # либо сразу город (для всех остальных стран). Решает country_child_detail.
+    path("<slug:country_slug>/<slug:second_slug>/", views.country_child_detail, name="country_child_detail"),
+    # Третий сегмент существует только для "штатных" стран: /country/state/city/
+    path("<slug:country_slug>/<slug:state_slug>/<slug:city_slug>/", views.city_detail_in_state, name="city_detail_in_state"),
 ]

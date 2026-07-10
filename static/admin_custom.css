@@ -79,10 +79,10 @@ fieldset.aligned.module .form-row:last-child {
 
 /* эмодзи флага рядом с полем Country (City admin) / City (Location admin) — см. admin_country_flag.js.
    JS кладёт флаг прямым потомком ".form-row" (а не рядом с select внутри вложенных
-   div'ов), поэтому у City (одно поле в строке) и Location (Name+City в одной строке)
-   он оказывается на одном уровне вложенности. Делаем саму строку flex-контейнером —
-   тогда флаг центрируется по вертикали (align-items: center) и прижимается
-   вправо (margin-left: auto) одинаково в обоих случаях. */
+   div'ов), поэтому в обеих формах (City — только Country в строке, Location — только
+   City в строке) он оказывается на одном уровне вложенности. Делаем саму строку
+   flex-контейнером — тогда флаг центрируется по вертикали (align-items: center) и
+   прижимается вправо (margin-left: auto) одинаково в обоих случаях. */
 .form-row.field-country,
 .form-row.field-city {
     display: flex;
@@ -103,4 +103,12 @@ fieldset.aligned.module .form-row:last-child {
        саму строку формы и сдвинет остальные поля вниз */
     height: 24px;
     overflow: visible;
+}
+
+/* поле City в форме Location — select2 сам выставляет себе инлайн-ширину через JS,
+   поэтому обычный width в виджете тут не сработает, нужен !important. Делаем вдвое
+   шире дефолтной — иначе длинные подписи "City, State, Country" обрезаются. */
+.form-row.field-city .select2-container {
+    width: 32em !important;
+    max-width: 100%;
 }

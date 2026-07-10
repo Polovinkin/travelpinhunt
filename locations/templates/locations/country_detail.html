@@ -29,40 +29,65 @@
 {% endblock %}
 
 {% block content %}
-    <!-- Заголовок: флаг + название страны + счётчик городов -->
+    <!-- Заголовок: флаг + название страны + счётчик штатов или городов -->
     <div class="mb-8">
         <h1 class="text-3xl font-bold flex items-center gap-3">
             <span class="text-4xl">{{ country.flag }}</span>
             Pins in {{ country.name }}
         </h1>
-        <p class="text-gray-500 mt-2">{{ cities|length }} cit{{ cities|length|pluralize:"y,ies" }} with pin selling locations</p>
+        {% if country.has_states %}
+            <p class="text-gray-500 mt-2">{{ states|length }} state{{ states|length|pluralize }} with pin selling locations</p>
+        {% else %}
+            <p class="text-gray-500 mt-2">{{ cities|length }} cit{{ cities|length|pluralize:"y,ies" }} with pin selling locations</p>
+        {% endif %}
     </div>
 
-    <!-- Сетка городов: 2 колонки на мобиле, 3 на десктопе -->
+    <!-- Сетка штатов (для "штатных" стран, например США) или городов (для всех остальных): 2 колонки на мобиле, 3 на десктопе -->
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        {% for city in cities %}
-            <!-- Карточка-ссылка на страницу города -->
-            <a href="/{{ country.slug }}/{{ city.slug }}/"
-            class="relative bg-white border border-gray-200 rounded-lg px-4 py-5 sm:px-6 sm:py-6 text-lg font-medium hover:border-amber-600 hover:shadow-sm transition flex items-baseline justify-between gap-2">
-                <!-- Звёздочка столицы — маленькая, в левом верхнем углу карточки, не занимает место в строке названия -->
-                {% if city.is_capital %}
-                    <span title="Capital" class="absolute top-1.5 left-1.5 text-sm leading-none text-amber-500 cursor-default">★</span>
-                {% endif %}
-                <!-- Название + бейдж: бейдж присоединяется к строке названия, пока влезает, и переносится сам, если нет -->
-                <div class="flex flex-wrap items-center gap-2">
-                    <span>{{ city.name }}</span>
-                    {% if city.location_type %}
-                        <span class="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-normal">
-                            {{ city.location_type }}
-                        </span>
+        {% if country.has_states %}
+            {% for state in states %}
+                <!-- Карточка-ссылка на страницу штата -->
+                <a href="{{ state.url }}"
+                class="relative bg-white border border-gray-200 rounded-lg px-4 py-5 sm:px-6 sm:py-6 text-lg font-medium hover:border-amber-600 hover:shadow-sm transition flex items-baseline justify-between gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
+                        {% if state.code %}
+                            <!-- Код штата — квадратная цветная рамка, стоит перед названием -->
+                            <span class="shrink-0 text-xs font-bold text-amber-800 bg-amber-50 border border-amber-300 rounded px-1.5 py-0.5 tracking-wide">
+                                {{ state.code }}
+                            </span>
+                        {% endif %}
+                        <span>{{ state.name }}</span>
+                    </div>
+                    <span class="text-sm text-gray-400 font-normal shrink-0">{{ state.location_count }}</span>
+                </a>
+            {% empty %}
+                <p class="text-gray-500 col-span-4">No states with locations yet.</p>
+            {% endfor %}
+        {% else %}
+            {% for city in cities %}
+                <!-- Карточка-ссылка на страницу города -->
+                <a href="{{ city.url }}"
+                class="relative bg-white border border-gray-200 rounded-lg px-4 py-5 sm:px-6 sm:py-6 text-lg font-medium hover:border-amber-600 hover:shadow-sm transition flex items-baseline justify-between gap-2">
+                    <!-- Звёздочка столицы — маленькая, в левом верхнем углу карточки, не занимает место в строке названия -->
+                    {% if city.is_capital %}
+                        <span title="Capital" class="absolute top-1.5 left-1.5 text-sm leading-none text-amber-500 cursor-default">★</span>
                     {% endif %}
-                </div>
-                <!-- Количество локаций — жёстко зафиксировано справа, на уровне названия, никогда не переносится -->
-                <span class="text-sm text-gray-400 font-normal shrink-0">{{ city.location_count }}</span>
-            </a>
-        {% empty %}
-            <!-- Заглушка если для страны ещё нет ни одного города -->
-            <p class="text-gray-500 col-span-4">No cities added yet.</p>
-        {% endfor %}
+                    <!-- Название + бейдж: бейдж присоединяется к строке названия, пока влезает, и переносится сам, если нет -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span>{{ city.name }}</span>
+                        {% if city.location_type %}
+                            <span class="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-normal">
+                                {{ city.location_type }}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <!-- Количество локаций — жёстко зафиксировано справа, на уровне названия, никогда не переносится -->
+                    <span class="text-sm text-gray-400 font-normal shrink-0">{{ city.location_count }}</span>
+                </a>
+            {% empty %}
+                <!-- Заглушка если для страны ещё нет ни одного города -->
+                <p class="text-gray-500 col-span-4">No cities added yet.</p>
+            {% endfor %}
+        {% endif %}
     </div>
 {% endblock %}

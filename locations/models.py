@@ -1,5 +1,6 @@
 # Структура базы данных. Тут находятся классы которые становятся таблицами в PostgreSQL. Это сердце приложения.
 from django.db import models
+from django.db.models import Q
 from django.utils.text import slugify
 
 
@@ -7,6 +8,13 @@ class Country(models.Model):
     name = models.CharField(max_length=30, help_text="Country name in English")
     code = models.CharField(max_length=2, unique=True, help_text="ISO country code, for flags")  # ISO код: RU, FR, JP, TH
     slug = models.SlugField(unique=True, blank=True, help_text="Generated automatically from the name")
+    has_states = models.BooleanField(
+        default=False,
+        help_text=(
+            "Show a state/region layer for this country (e.g. USA): "
+            "Country → State → City instead of Country → City"
+        ),
+    )
 
     def save(self, *args, **kwargs):
         # генерируем slug из названия страны один раз при создании
@@ -28,8 +36,40 @@ class Country(models.Model):
         return "".join(chr(0x1F1E6 + ord(c) - ord("A")) for c in self.code.upper())
 
 
+class State(models.Model):
+    """Штат/провинция/регион внутри страны. Универсальная модель — не только для США,
+    подойдёт для любой страны с делением на штаты/провинции. Используется только когда
+    у страны стоит Country.has_states=True."""
+
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="states")
+    name = models.CharField(max_length=50, help_text="State/region name in English")
+    slug = models.SlugField(blank=True, help_text="Generated automatically from the name")
+    code = models.CharField(max_length=10, blank=True, help_text="Optional abbreviation, e.g. CA, NY")
+
+    def save(self, *args, **kwargs):
+        # генерируем slug из названия штата один раз при создании
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.name}, {self.country.name}"
+
+    class Meta:
+        unique_together = ["country", "slug"]  # slug уникален в рамках страны, не глобально
+        ordering = ["name"]
+
+    @property
+    def url(self):
+        return f"/{self.country.slug}/{self.slug}/"
+
+
 class City(models.Model):
     country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="cities")
+    state = models.ForeignKey(
+        State, on_delete=models.CASCADE, related_name="cities", null=True, blank=True,
+        help_text="Only for countries with Country.has_states=True (e.g. USA). Leave blank otherwise.",
+    )
     name = models.CharField(max_length=50, db_index=True, help_text="City name in English")
     slug = models.SlugField(blank=True, help_text="Generated automatically from the name")
     is_capital = models.BooleanField(default=False, help_text="Is this the capital city?")
@@ -44,12 +84,32 @@ class City(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
+        if self.state_id:
+            return f"{self.name}, {self.state.name}, {self.country.name}"
         return f"{self.name}, {self.country.name}"
 
     class Meta:
         verbose_name_plural = "Cities"
-        unique_together = ["country", "slug"]  # slug уникален в рамках страны, не глобально
         ordering = ["name"]
+        constraints = [
+            # страны без штатов: slug уникален в рамках страны — поведение как раньше
+            models.UniqueConstraint(
+                fields=["country", "slug"], condition=Q(state__isnull=True),
+                name="unique_city_slug_per_country_without_state",
+            ),
+            # страны со штатами: slug уникален в рамках штата, а не всей страны — это
+            # позволяет, например, Springfield в Illinois и Springfield в Ohio сосуществовать
+            models.UniqueConstraint(
+                fields=["state", "slug"], condition=Q(state__isnull=False),
+                name="unique_city_slug_per_state",
+            ),
+        ]
+
+    @property
+    def url(self):
+        if self.state_id:
+            return f"/{self.country.slug}/{self.state.slug}/{self.slug}/"
+        return f"/{self.country.slug}/{self.slug}/"
 
 
 class PinType(models.Model):
