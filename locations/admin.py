@@ -269,6 +269,10 @@ class PinTypeAdmin(admin.ModelAdmin):
 
 # --- SUBMISSIONS (заявки от пользователей) ---
 
+from django.urls import reverse
+from django.utils.html import format_html
+from urllib.parse import urlencode
+
 class LocationSubmissionAdminForm(forms.ModelForm):
     """Кастомная форма заявки: эмодзи в лейблах чекбоксов совпадают с формой на /submit/"""
 
@@ -293,7 +297,7 @@ class LocationSubmissionAdmin(admin.ModelAdmin):
     list_display = ["location_name", "city_name", "country_name", "status", "created_at"]
     list_filter = ["status", "has_city_pins", "has_country_pins", "has_place_pins"]
     search_fields = ["location_name", "city_name", "country_name"]
-    readonly_fields = ["created_at", "pin_types_label"]
+    readonly_fields = ["created_at", "pin_types_label", "create_location_link"]
     list_editable = ["status"]  # статус можно менять прямо в списке без захода в каждую запись
     # явный порядок полей: description показывается раньше google_maps_url,
     # а photo_url — после чекбоксов с типами пинов
@@ -308,6 +312,7 @@ class LocationSubmissionAdmin(admin.ModelAdmin):
             ("pin_types_label", "has_city_pins", "has_country_pins", "has_place_pins"),
             "photo_url",
             "submitter_email",
+            "create_location_link",
         ]}),
         ("Meta", {"fields": ["created_at", "notes"]}),
     ]
@@ -315,6 +320,40 @@ class LocationSubmissionAdmin(admin.ModelAdmin):
     def pin_types_label(self, obj):
         return ""
     pin_types_label.short_description = "Pin types"
+
+    def create_location_link(self, obj):
+        # кнопка, открывающая форму "Add location" с уже заполненными name/description/
+        # google_maps_url/pin_types из этой заявки — остаётся выбрать только city (и создать
+        # его при необходимости, указав country)
+        if obj.pk is None:
+            return "Save the submission first"
+
+        pin_type_names = []
+        if obj.has_city_pins:
+            pin_type_names.append(PinType.CITY)
+        if obj.has_country_pins:
+            pin_type_names.append(PinType.COUNTRY)
+        if obj.has_place_pins:
+            pin_type_names.append(PinType.PLACE)
+        pin_type_ids = PinType.objects.filter(name__in=pin_type_names).values_list("pk", flat=True)
+
+        params = {
+            "name": obj.location_name,
+            "description": obj.description,
+            "google_maps_url": obj.google_maps_url,
+        }
+        if pin_type_ids:
+            # Django admin ждёт m2m initial data одной строкой через запятую, не повторяющимися ключами
+            params["pin_types"] = ",".join(str(pk) for pk in pin_type_ids)
+
+        url = reverse("admin:locations_location_add") + "?" + urlencode(params)
+        # обычный "+", а не эмодзи ➕ — у цветного эмодзи свой фиксированный цвет глифа,
+        # CSS color на него не действует, поэтому на тёмно-зелёной кнопке он плохо виден
+        return format_html(
+            '<a class="button" href="{}" target="_blank">+ Create Location from this submission</a>',
+            url,
+        )
+    create_location_link.short_description = "Quick create"
     formfield_overrides = {
         models.TextField: {"widget": forms.Textarea(attrs={"rows": 4})},
     }
