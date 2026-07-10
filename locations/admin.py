@@ -88,7 +88,7 @@ class CityAdminForm(forms.ModelForm):
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
     form = CityAdminForm
-    list_display = ["name", "country", "slug", "is_capital", "location_count"]
+    list_display = ["name", "flag_display", "country", "slug", "is_capital", "location_count"]
     search_fields = ["name"]
     list_filter = ["country"]
     readonly_fields = ["slug"]  # slug генерируется автоматически из name
@@ -113,6 +113,11 @@ class CityAdmin(admin.ModelAdmin):
         return obj.locations.count()
     location_count.short_description = "Locations"
 
+    def flag_display(self, obj):
+        # эмодзи флага страны рядом с её названием, как в списке стран
+        return obj.country.flag
+    flag_display.short_description = "Flag"
+
     def _country_flags_context(self):
         # {country_id: flag_emoji} для JS, который рисует флаг рядом с полем Country.
         # Считаем на каждый рендер формы (запрос дешёвый — всего ~170 стран), а не кэшируем,
@@ -136,7 +141,7 @@ class LocationAdminForm(forms.ModelForm):
 
     coordinates = forms.CharField(
         required=False,
-        help_text="Paste coordinates from Google Maps, e.g. 47.18706, 9.32250",
+        help_text="Paste coordinates, e.g. 47.18706, 9.32250",
         widget=forms.TextInput(attrs={"autocomplete": "off"})
     )
 
@@ -220,6 +225,21 @@ class LocationAdmin(admin.ModelAdmin):
         # select_related избегает N+1: достаём локации сразу с их городами одним JOIN запросом
         return super().get_queryset(request).select_related("city", "city__country")
 
+    def _city_flags_context(self):
+        # {city_id: flag_emoji} для JS, который рисует флаг рядом с полем City
+        # (флаг берётся из страны, к которой привязан город)
+        import json
+        cities = City.objects.select_related("country")
+        return {"city_flags_json": json.dumps({str(c.pk): c.country.flag for c in cities})}
+
+    def add_view(self, request, form_url="", extra_context=None):
+        extra_context = {**(extra_context or {}), **self._city_flags_context()}
+        return super().add_view(request, form_url, extra_context)
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        extra_context = {**(extra_context or {}), **self._city_flags_context()}
+        return super().change_view(request, object_id, form_url, extra_context)
+
     # эмодзи как на форме /submit/, только для отображения в этой форме — модель не трогаем
     PIN_TYPE_EMOJI = {"city": "🏙️", "place": "🏛️", "country": "🌍"}
 
@@ -237,6 +257,7 @@ class LocationAdmin(admin.ModelAdmin):
 
     class Media:
         css = {"all": ["admin_custom.css"]}  # чекбоксы pin_types в одну строку
+        js = ["admin_country_flag.js"]  # флаг страны рядом с полем City
 
 
 # --- PIN TYPES ---

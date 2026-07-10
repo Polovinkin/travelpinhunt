@@ -63,15 +63,30 @@ input[type="checkbox"] {
     accent-color: #2563eb;
 }
 
-/* эмодзи флага рядом с полем Country на странице City (см. admin_country_flag.js) */
+/* эмодзи флага рядом с полем Country (City admin) / City (Location admin) — см. admin_country_flag.js.
+   JS кладёт флаг прямым потомком ".form-row" (а не рядом с select внутри вложенных
+   div'ов), поэтому у City (одно поле в строке) и Location (Name+City в одной строке)
+   он оказывается на одном уровне вложенности. Делаем саму строку flex-контейнером —
+   тогда флаг центрируется по вертикали (align-items: center) и прижимается
+   вправо (margin-left: auto) одинаково в обоих случаях. */
+.form-row.field-country,
+.form-row.field-city {
+    display: flex;
+    align-items: flex-start;
+}
+
 .country-flag-preview {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    margin-left: auto;
+    /* выравниваем верх флага с верхом текста в input/label, а не с вертикальным
+       центром всей строки (там ниже, чем хотелось бы) */
+    margin-top: 2px;
+    padding-left: 16px;
     font-size: 42px;
     line-height: 1;
-    margin-left: 10px;
-    vertical-align: middle;
-    /* компенсируем реальную высоту эмодзи (больше line-height), чтобы флаг не растягивал
-       строку и не сдвигал остальные поля формы вниз */
-    max-height: 22px;
+    /* фиксируем реальную высоту флекс-айтема — иначе крупный шрифт эмодзи растянет
+       саму строку формы и сдвинет остальные поля вниз */
+    height: 24px;
     overflow: visible;
 }

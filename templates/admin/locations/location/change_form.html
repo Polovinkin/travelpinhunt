@@ -1,0 +1,10 @@
+{% extends "admin/change_form.html" %}
+
+<!-- Шаблон формы Location. Единственное отличие от стандартной формы — JSON-мэппинг
+     {city_id: flag_emoji}, который читает static/admin_country_flag.js, чтобы
+     рисовать флаг страны выбранного города рядом с полем City. -->
+
+{% block field_sets %}
+<script id="city-flags-data" type="application/json">{{ city_flags_json|safe }}</script>
+{{ block.super }}
+{% endblock field_sets %}
