@@ -42,8 +42,9 @@ class LocationSubmissionForm(forms.ModelForm):
                 "class": INPUT_CLASS,
                 "style": "padding-right: 58px",
             }),
-            "google_maps_url": forms.URLInput(attrs={
+            "google_maps_url": forms.TextInput(attrs={
                 "placeholder": "https://maps.app.goo.gl/...",
+                "autocomplete": "off",
                 "maxlength": "500",
                 "class": INPUT_CLASS,
                 "style": "padding-right: 62px",
@@ -54,8 +55,9 @@ class LocationSubmissionForm(forms.ModelForm):
                 "maxlength": "1000",
                 "class": TEXTAREA_CLASS,
             }),
-            "photo_url": forms.URLInput(attrs={
+            "photo_url": forms.TextInput(attrs={
                 "placeholder": "Link to a photo of the pins sold there (Google Photos, Imgur, etc.)",
+                "autocomplete": "off",
                 "class": INPUT_CLASS,
                 "maxlength": "500",
                 "style": "padding-right: 62px",
