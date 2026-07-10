@@ -1,6 +1,6 @@
 # Логика страниц. Каждая функция получает запрос, достаёт данные из БД и возвращает HTML. Мозг приложения.
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Country, City, Location
+from .models import Country, City, Location, LocationSubmission
 from .forms import LocationSubmissionForm
 from django.db.models import Count
 from django.views.decorators.cache import never_cache
@@ -119,3 +119,19 @@ def submit_location(request):
 @never_cache  # аналогично — страница успеха не должна открываться повторно из кеша
 def submit_success(request):
     return render(request, "locations/submit_success.html")
+
+
+def contributors(request):
+    # Никнеймы контрибьюторов, у кого хотя бы одна заявка одобрена (Approved).
+    # Считаем сколько одобренных заявок у каждого никнейма, сортируем по убыванию.
+    contributors_list = (
+        LocationSubmission.objects
+        .filter(status=LocationSubmission.APPROVED)
+        .exclude(contributor_nickname="")
+        .values("contributor_nickname")
+        .annotate(submission_count=Count("id"))
+        .order_by("-submission_count", "contributor_nickname")
+    )
+    return render(request, "locations/contributors.html", {
+        "contributors_list": contributors_list,
+    })

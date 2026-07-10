@@ -280,9 +280,12 @@
     </main>
 
     <footer class="border-t border-gray-200 mt-5 py-6">
-    <div class="max-w-4xl mx-auto px-6 flex items-center justify-between text-sm text-amber-700">
+    <div class="max-w-4xl mx-auto px-6 flex items-baseline justify-between text-sm text-amber-700">
         <span class="text-sm text-amber-700">Made while travelling 🌍✈️👨🏼‍💻</span>
-        <span>© 2026</span>
+        <span class="flex items-baseline gap-2">
+            <a href="{% url 'locations:contributors' %}" class="border border-amber-800 bg-white text-amber-700 px-3 py-0.5 rounded-full hover:bg-amber-50 transition">Contributors</a>
+            <span>· © 2026</span>
+        </span>
     </div>
 </footer>
 </body>
