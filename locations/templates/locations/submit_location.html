@@ -37,14 +37,14 @@
             <!-- Страна и город в одну строку -->
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Country *</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Country</label>
                     {{ form.country_name }}
                     {% if form.country_name.errors %}
                         <p class="text-xs text-red-500 mt-1">{{ form.country_name.errors.0 }}</p>
                     {% endif %}
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">City *</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
                     {{ form.city_name }}
                     {% if form.city_name.errors %}
                         <p class="text-xs text-red-500 mt-1">{{ form.city_name.errors.0 }}</p>
@@ -54,7 +54,7 @@
 
             <!-- Название места -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Location name *</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Location name</label>
                 {{ form.location_name }}
                 {% if form.location_name.errors %}
                     <p class="text-xs text-red-500 mt-1">{{ form.location_name.errors.0 }}</p>
@@ -65,7 +65,7 @@
 
             <!-- Ссылка на Google Maps (обязательно) -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Google Maps link *</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Google Maps link</label>
                 {{ form.google_maps_url }}
                 {% if form.google_maps_url.errors %}
                     <p class="text-xs text-red-500 mt-1">{{ form.google_maps_url.errors.0 }}</p>
@@ -76,7 +76,7 @@
 
             <!-- Описание места -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
                 {{ form.description }}
                 {% if form.description.errors %}
                     <p class="text-xs text-red-500 mt-1">{{ form.description.errors.0 }}</p>
@@ -85,7 +85,7 @@
 
             <!-- Чекбоксы типов пинов: city / country / place -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Pin types available *</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Pin types available</label>
                 {% if form.non_field_errors %}
                     <p class="text-xs text-red-500 mb-2">{{ form.non_field_errors.0 }}</p>
                 {% endif %}
