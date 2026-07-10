@@ -112,3 +112,20 @@ fieldset.aligned.module .form-row:last-child {
     width: 32em !important;
     max-width: 100%;
 }
+
+/* бейдж с числом Pending-заявок рядом с "Location submissions" на главной странице
+   админки — см. get_app_list в admin.py. */
+.pending-badge {
+    display: inline-block;
+    min-width: 18px;
+    padding: 1px 6px;
+    margin-left: 6px;
+    border-radius: 10px;
+    background: #f59e0b;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 16px;
+    text-align: center;
+    vertical-align: middle;
+}

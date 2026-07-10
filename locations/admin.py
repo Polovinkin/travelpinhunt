@@ -497,3 +497,49 @@ class LocationSubmissionAdmin(admin.ModelAdmin):
 
     class Media:
         css = {"all": ["admin_custom.css"]}  # жирный лейбл "Pin types:"
+
+
+# на главной странице админки подписываем "Location submissions" количеством заявок в
+# статусе Pending (чтобы новые заявки было видно сразу, без захода внутрь) и выставляем
+# ручной порядок моделей в разделе Locations вместо дефолтного алфавитного.
+# get_app_list вызывается на каждый рендер главной, поэтому и счётчик, и порядок всегда актуальны.
+_original_get_app_list = admin.site.get_app_list
+
+# порядок моделей в разделе Locations на главной странице (по object_name модели)
+_LOCATIONS_MODEL_ORDER = ["LocationSubmission", "Location", "City", "Country", "State", "PinType"]
+
+# эмодзи-префикс для названий моделей в разделе Locations на главной странице (чисто визуально)
+_LOCATIONS_MODEL_EMOJI = {
+    "LocationSubmission": "📥",
+    "Location": "📍",
+    "City": "🏙️",
+    "Country": "🌍",
+    "State": "🗺️",
+    "PinType": "📌",
+}
+
+
+def _get_app_list_with_pending_badge(self, request, app_label=None):
+    app_list = _original_get_app_list(request, app_label)
+    pending_count = LocationSubmission.objects.filter(status=LocationSubmission.PENDING).count()
+    for app in app_list:
+        if app["app_label"] == "locations":
+            app["models"].sort(
+                key=lambda m: (
+                    _LOCATIONS_MODEL_ORDER.index(m["object_name"])
+                    if m["object_name"] in _LOCATIONS_MODEL_ORDER
+                    else len(_LOCATIONS_MODEL_ORDER)
+                )
+            )
+            for model in app["models"]:
+                emoji = _LOCATIONS_MODEL_EMOJI.get(model["object_name"])
+                if emoji:
+                    model["name"] = f"{emoji} {model['name']}"
+                if pending_count and model["object_name"] == "LocationSubmission":
+                    model["name"] = format_html(
+                        "{} <span class=\"pending-badge\">{}</span>", model["name"], pending_count
+                    )
+    return app_list
+
+
+admin.site.get_app_list = _get_app_list_with_pending_badge.__get__(admin.site, admin.AdminSite)
