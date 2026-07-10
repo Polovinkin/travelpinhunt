@@ -120,6 +120,10 @@ class LocationSubmission(models.Model):
 
     # Контакт сабмиттера (опционально)
     submitter_email = models.EmailField(max_length=100, blank=True, help_text="Your email (optional)")
+    contributor_nickname = models.CharField(
+        max_length=50, blank=True,
+        help_text="Nickname to credit you in the Contributors list on the site (optional)",
+    )
 
     # Статус модерации и служебные поля
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)

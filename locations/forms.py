@@ -18,6 +18,7 @@ class LocationSubmissionForm(forms.ModelForm):
             "has_country_pins",
             "has_place_pins",
             "submitter_email",
+            "contributor_nickname",
         ]
         widgets = {
             "country_name": forms.TextInput(attrs={
@@ -66,6 +67,13 @@ class LocationSubmissionForm(forms.ModelForm):
                 "style": "padding-right: 59px",
                 "autocomplete": "email",
             }),
+            "contributor_nickname": forms.TextInput(attrs={
+                "placeholder": "e.g. PinHunter42",
+                "autocomplete": "nickname",
+                "maxlength": "50",
+                "class": INPUT_CLASS,
+                "style": "padding-right: 55px",
+            }),
         }
         labels = {
             "country_name": "Country",
@@ -78,6 +86,7 @@ class LocationSubmissionForm(forms.ModelForm):
             "has_country_pins": "Country pins",
             "has_place_pins": "Place pins",
             "submitter_email": "Your email",
+            "contributor_nickname": "Contributor nickname",
         }
 
     def clean(self):

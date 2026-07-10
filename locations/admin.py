@@ -311,7 +311,7 @@ class LocationSubmissionAdmin(admin.ModelAdmin):
             # подпись "Pin types:" точно в том же стиле, что и у остальных полей
             ("pin_types_label", "has_city_pins", "has_country_pins", "has_place_pins"),
             "photo_url",
-            "submitter_email",
+            ("submitter_email", "contributor_nickname"),
             "create_location_link",
         ]}),
         ("Meta", {"fields": ["created_at", "notes"]}),
