@@ -8,16 +8,55 @@ from django.utils.text import slugify
 
 # --- COUNTRIES ---
 
+class HasLocationsFilter(admin.SimpleListFilter):
+    """Тоггл в сайдбаре: показывать только страны, у которых есть хотя бы одна locations."""
+
+    title = "has locations"
+    parameter_name = "has_locations"
+
+    def lookups(self, request, model_admin):
+        return [("yes", "With locations"), ("no", "Without locations")]
+
+    def queryset(self, request, queryset):
+        # queryset тут уже annotated в CountryAdmin.get_queryset (location_count_annotated)
+        if self.value() == "yes":
+            return queryset.filter(location_count_annotated__gt=0)
+        if self.value() == "no":
+            return queryset.filter(location_count_annotated=0)
+        return queryset
+
+
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
-    list_display = ["name", "code", "slug", "city_count"]
+    list_display = ["flag_display", "name", "code", "slug", "city_count", "location_count"]
+    list_display_links = ["name"]  # кликабельным должно быть название, а не флаг
+    list_filter = [HasLocationsFilter]
     search_fields = ["name", "code"]
     readonly_fields = ["slug"]  # slug генерируется автоматически из name, руками не редактируется
 
+    def get_queryset(self, request):
+        # annotate вместо obj.cities... в цикле — иначе на 100+ странах будет N+1 запросов.
+        # distinct=True на обоих Count, потому что JOIN cities+locations размножает строки
+        return super().get_queryset(request).annotate(
+            city_count_annotated=models.Count("cities", distinct=True),
+            location_count_annotated=models.Count("cities__locations", distinct=True),
+        )
+
+    def flag_display(self, obj):
+        # эмодзи флага для визуала в списке стран
+        return obj.flag
+    flag_display.short_description = "Flag"
+
     def city_count(self, obj):
-        # считает сколько городов есть внутри каждой страны
-        return obj.cities.count()
+        return obj.city_count_annotated
     city_count.short_description = "Cities"
+    city_count.admin_order_field = "city_count_annotated"
+
+    def location_count(self, obj):
+        # сколько всего pin locations в городах этой страны
+        return obj.location_count_annotated
+    location_count.short_description = "Locations"
+    location_count.admin_order_field = "location_count_annotated"
 
 
 # --- CITIES ---
@@ -54,6 +93,16 @@ class CityAdmin(admin.ModelAdmin):
     list_filter = ["country"]
     readonly_fields = ["slug"]  # slug генерируется автоматически из name
     autocomplete_fields = ["country"]  # поиск страны по названию вместо огромного дропдауна
+    fields = [
+        "country",
+        ("name", "is_capital"),  # кортеж = два поля в одной строке
+        "location_type",
+        "slug",
+    ]
+
+    class Media:
+        # рисует эмодзи флага справа от поля Country и обновляет его при выборе страны
+        js = ["admin_country_flag.js"]
 
     def get_queryset(self, request):
         # select_related избегает N+1: достаём города сразу с их странами одним JOIN запросом
@@ -63,6 +112,21 @@ class CityAdmin(admin.ModelAdmin):
         # показывает сколько pin locations добавлено в этом городе
         return obj.locations.count()
     location_count.short_description = "Locations"
+
+    def _country_flags_context(self):
+        # {country_id: flag_emoji} для JS, который рисует флаг рядом с полем Country.
+        # Считаем на каждый рендер формы (запрос дешёвый — всего ~170 стран), а не кэшируем,
+        # чтобы не расходиться с реальными данными в БД.
+        import json
+        return {"country_flags_json": json.dumps({str(c.pk): c.flag for c in Country.objects.all()})}
+
+    def add_view(self, request, form_url="", extra_context=None):
+        extra_context = {**(extra_context or {}), **self._country_flags_context()}
+        return super().add_view(request, form_url, extra_context)
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        extra_context = {**(extra_context or {}), **self._country_flags_context()}
+        return super().change_view(request, object_id, form_url, extra_context)
 
 
 # --- LOCATIONS ---

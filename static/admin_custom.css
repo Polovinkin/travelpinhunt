@@ -40,3 +40,38 @@ form .aligned ul {
 .fieldBox.field-pin_types_label label {
     font-weight: bold;
 }
+
+/* колонка с эмодзи флага в списке стран — по умолчанию тянется на всю ширину как обычный
+   текстовый столбец, из-за этого выглядит криво. Сужаем и центрируем содержимое.
+   Важно: у <th> (заголовок) класс "column-flag_display", а у <td> (сами ячейки со
+   значением) — "field-flag_display", поэтому таргетимся на оба. */
+#result_list .column-flag_display {
+    width: 40px;
+}
+
+#result_list td.field-flag_display {
+    text-align: center;
+    font-size: 20px;
+}
+
+/* чекбоксы (is_capital, pin_types и т.д.) рендерятся браузером как нативные элементы.
+   Django admin выставляет "color-scheme: light dark", из-за чего в тёмной теме ОС
+   браузер красит невыбранный чекбокс сплошным тёмным квадратом. Принудительно фиксируем
+   светлую схему для самих чекбоксов — тогда пустой чекбокс белый, а отмеченный — синий. */
+input[type="checkbox"] {
+    color-scheme: light;
+    accent-color: #2563eb;
+}
+
+/* эмодзи флага рядом с полем Country на странице City (см. admin_country_flag.js) */
+.country-flag-preview {
+    display: inline-block;
+    font-size: 42px;
+    line-height: 1;
+    margin-left: 10px;
+    vertical-align: middle;
+    /* компенсируем реальную высоту эмодзи (больше line-height), чтобы флаг не растягивал
+       строку и не сдвигал остальные поля формы вниз */
+    max-height: 22px;
+    overflow: visible;
+}
