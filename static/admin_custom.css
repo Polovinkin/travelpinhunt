@@ -63,6 +63,20 @@ input[type="checkbox"] {
     accent-color: #2563eb;
 }
 
+/* каждый "подраздел" формы (fieldset с зелёной плашкой-заголовком типа Location/Pin types/Meta)
+   получает от самого Django класс "module", а он по умолчанию имеет margin-bottom: 30px.
+   Вместе с обычной border-bottom последней .form-row внутри это и даёт "линию + пустое
+   место" перед следующей зелёной плашкой. Убираем то и другое — секции должны стыковаться
+   вплотную, разделяет их только сама зелёная плашка. Таргетимся именно на ".aligned.module"
+   (класс формы админки), чтобы не задеть другие ".module"-блоки (например, на дашборде). */
+fieldset.aligned.module {
+    margin-bottom: 0;
+}
+
+fieldset.aligned.module .form-row:last-child {
+    border-bottom: none;
+}
+
 /* эмодзи флага рядом с полем Country (City admin) / City (Location admin) — см. admin_country_flag.js.
    JS кладёт флаг прямым потомком ".form-row" (а не рядом с select внутри вложенных
    div'ов), поэтому у City (одно поле в строке) и Location (Name+City в одной строке)
