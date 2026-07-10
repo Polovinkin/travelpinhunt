@@ -35,11 +35,6 @@
         var statesByCountry = getJSON("states-by-country-data");
         var $stateRow = $state.closest(".form-row");
 
-        // изначально выбранный штат (при открытии формы редактирования существующего города) —
-        // сохраняем, чтобы восстановить выбор после пересборки списка опций
-        var initialStateId = stateSelect.value;
-        var firstRun = true;
-
         function rebuildOptions(countryId, selectedId) {
             var options = statesByCountry[countryId] || [];
             stateSelect.innerHTML = "";
@@ -61,6 +56,11 @@
         function sync() {
             var countryId = $country.val();
             var hasStates = !!hasStatesMap[countryId];
+            // читаем ТЕКУЩЕЕ значение поля State перед каждой перестройкой (а не только
+            // один раз при загрузке) — так выбор переживает повторные вызовы sync(),
+            // в том числе если select2 при инициализации сам триггерит лишний change
+            // на поле Country без реальной смены страны
+            var currentStateId = stateSelect.value;
 
             if (!hasStates) {
                 stateSelect.value = "";
@@ -68,12 +68,11 @@
                 return;
             }
 
-            rebuildOptions(countryId, firstRun ? initialStateId : "");
+            rebuildOptions(countryId, currentStateId);
             $stateRow.show();
         }
 
         sync();
-        firstRun = false;
 
         // select2 триггерит нативный change на скрытом <select>, поэтому обычного
         // .on("change") достаточно (см. тот же комментарий в admin_country_flag.js)
