@@ -35,9 +35,9 @@
             <span class="text-4xl">{{ country.flag }}</span>
             Travel pins in {{ country.name }}</h1>
         {% if country.has_states %}
-            <p class="text-gray-500 mt-2">{{ states|length }} state{{ states|length|pluralize }} with pin selling locations</p>
+            <p class="text-gray-500 dark:text-stone-400 mt-2">{{ states|length }} state{{ states|length|pluralize }} with pin selling locations</p>
         {% else %}
-            <p class="text-gray-500 mt-2">{{ cities|length }} cit{{ cities|length|pluralize:"y,ies" }} with pin selling locations</p>
+            <p class="text-gray-500 dark:text-stone-400 mt-2">{{ cities|length }} cit{{ cities|length|pluralize:"y,ies" }} with pin selling locations</p>
         {% endif %}
     </div>
 
@@ -47,45 +47,45 @@
             {% for state in states %}
                 <!-- Карточка-ссылка на страницу штата -->
                 <a href="{{ state.url }}"
-                class="relative bg-white border border-gray-200 rounded-lg pl-3 pr-4 py-5 sm:pl-4 sm:pr-6 sm:py-6 text-base sm:text-lg font-medium hover:border-amber-600 hover:shadow-sm transition flex items-baseline justify-between gap-2">
+                class="relative bg-white border border-gray-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg pl-3 pr-4 py-5 sm:pl-4 sm:pr-6 sm:py-6 text-base sm:text-lg font-medium hover:border-amber-600 dark:hover:border-amber-500 hover:shadow-sm transition flex items-baseline justify-between gap-2">
                     <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                         {% if state.code %}
                             <!-- Код штата — квадратная цветная рамка, стоит перед названием (фиксированная ширина/высота, чтобы рамка всегда была квадратной, а не сжатой; левый отступ карточки равен отступу до названия) -->
-                            <span class="shrink-0 w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-[0.65rem] sm:text-xs font-bold text-amber-800 bg-amber-50 border border-amber-300 rounded tracking-wide">
+                            <span class="shrink-0 w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-[0.65rem] sm:text-xs font-bold text-amber-800 bg-amber-50 border border-amber-300 dark:text-amber-300 dark:bg-amber-950/50 dark:border-amber-800 rounded tracking-wide">
                                 {{ state.code }}
                             </span>
                         {% endif %}
                         <span>{{ state.name }}</span>
                     </div>
-                    <span class="text-sm text-gray-400 font-normal shrink-0">{{ state.location_count }}</span>
+                    <span class="text-sm text-gray-400 dark:text-stone-500 font-normal shrink-0">{{ state.location_count }}</span>
                 </a>
             {% empty %}
-                <p class="text-gray-500 col-span-4">No states with locations yet.</p>
+                <p class="text-gray-500 dark:text-stone-400 col-span-4">No states with locations yet.</p>
             {% endfor %}
         {% else %}
             {% for city in cities %}
                 <!-- Карточка-ссылка на страницу города -->
                 <a href="{{ city.url }}"
-                class="relative bg-white border border-gray-200 rounded-lg px-4 py-5 sm:px-6 sm:py-6 text-lg font-medium hover:border-amber-600 hover:shadow-sm transition flex items-baseline justify-between gap-2">
+                class="relative bg-white border border-gray-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg px-4 py-5 sm:px-6 sm:py-6 text-lg font-medium hover:border-amber-600 dark:hover:border-amber-500 hover:shadow-sm transition flex items-baseline justify-between gap-2">
                     <!-- Звёздочка столицы — маленькая, в левом верхнем углу карточки, не занимает место в строке названия -->
                     {% if city.is_capital %}
-                        <span title="Capital" class="absolute top-1.5 left-1.5 text-sm leading-none text-amber-500 cursor-default">★</span>
+                        <span title="Capital" class="absolute top-1.5 left-1.5 text-sm leading-none text-amber-500 dark:text-amber-400 cursor-default">★</span>
                     {% endif %}
                     <!-- Название + бейдж: бейдж присоединяется к строке названия, пока влезает, и переносится сам, если нет -->
                     <div class="flex flex-wrap items-center gap-2">
                         <span>{{ city.name }}</span>
                         {% if city.location_type %}
-                            <span class="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-normal">
+                            <span class="text-xs bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 px-2 py-0.5 rounded-full font-normal">
                                 {{ city.location_type }}
                             </span>
                         {% endif %}
                     </div>
                     <!-- Количество локаций — жёстко зафиксировано справа, на уровне названия, никогда не переносится -->
-                    <span class="text-sm text-gray-400 font-normal shrink-0">{{ city.location_count }}</span>
+                    <span class="text-sm text-gray-400 dark:text-stone-500 font-normal shrink-0">{{ city.location_count }}</span>
                 </a>
             {% empty %}
                 <!-- Заглушка если для страны ещё нет ни одного города -->
-                <p class="text-gray-500 col-span-4">No cities added yet.</p>
+                <p class="text-gray-500 dark:text-stone-400 col-span-4">No cities added yet.</p>
             {% endfor %}
         {% endif %}
     </div>

@@ -30,7 +30,7 @@
 
 {% block content %}
     <!-- Breadcrumb: ссылка назад на страницу страны -->
-    <a href="/{{ country.slug }}/" class="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1 mb-3 -mt-3">
+    <a href="/{{ country.slug }}/" class="text-sm text-gray-500 dark:text-stone-400 hover:text-gray-700 dark:hover:text-gray-200 flex items-center gap-1 mb-3 -mt-3">
         ← {{ country.flag }} {{ country.name }}
     </a>
 
@@ -40,12 +40,12 @@
             <span class="text-3xl sm:text-4xl">{{ country.flag }}</span>
             {% if state.code %}
                 <!-- Код штата — та же квадратная цветная рамка, что и на странице страны -->
-                <span class="text-xs sm:text-sm font-bold text-amber-800 bg-amber-50 border border-amber-300 rounded px-1.5 py-0.5 tracking-wide">
+                <span class="text-xs sm:text-sm font-bold text-amber-800 bg-amber-50 border border-amber-300 dark:text-amber-300 dark:bg-amber-950/50 dark:border-amber-800 rounded px-1.5 py-0.5 tracking-wide">
                     {{ state.code }}
                 </span>
             {% endif %}
             Travel pins in {{ state.name }}</h1>
-        <p class="text-gray-500 mt-2">{{ cities|length }} cit{{ cities|length|pluralize:"y,ies" }} with pin selling locations</p>
+        <p class="text-gray-500 dark:text-stone-400 mt-2">{{ cities|length }} cit{{ cities|length|pluralize:"y,ies" }} with pin selling locations</p>
     </div>
 
     <!-- Сетка городов: 2 колонки на мобиле, 3 на десктопе -->
@@ -53,26 +53,26 @@
         {% for city in cities %}
             <!-- Карточка-ссылка на страницу города -->
             <a href="{{ city.url }}"
-            class="relative bg-white border border-gray-200 rounded-lg px-4 py-5 sm:px-6 sm:py-6 text-lg font-medium hover:border-amber-600 hover:shadow-sm transition flex items-baseline justify-between gap-2">
+            class="relative bg-white border border-gray-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg px-4 py-5 sm:px-6 sm:py-6 text-lg font-medium hover:border-amber-600 dark:hover:border-amber-500 hover:shadow-sm transition flex items-baseline justify-between gap-2">
                 <!-- Звёздочка столицы — маленькая, в левом верхнем углу карточки, не занимает место в строке названия -->
                 {% if city.is_capital %}
-                    <span title="Capital" class="absolute top-1.5 left-1.5 text-sm leading-none text-amber-500 cursor-default">★</span>
+                    <span title="Capital" class="absolute top-1.5 left-1.5 text-sm leading-none text-amber-500 dark:text-amber-400 cursor-default">★</span>
                 {% endif %}
                 <!-- Название + бейдж: бейдж присоединяется к строке названия, пока влезает, и переносится сам, если нет -->
                 <div class="flex flex-wrap items-center gap-2">
                     <span>{{ city.name }}</span>
                     {% if city.location_type %}
-                        <span class="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-normal">
+                        <span class="text-xs bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 px-2 py-0.5 rounded-full font-normal">
                             {{ city.location_type }}
                         </span>
                     {% endif %}
                 </div>
                 <!-- Количество локаций — жёстко зафиксировано справа, на уровне названия, никогда не переносится -->
-                <span class="text-sm text-gray-400 font-normal shrink-0">{{ city.location_count }}</span>
+                <span class="text-sm text-gray-400 dark:text-stone-500 font-normal shrink-0">{{ city.location_count }}</span>
             </a>
         {% empty %}
             <!-- Заглушка если для штата ещё нет ни одного города -->
-            <p class="text-gray-500 col-span-4">No cities added yet.</p>
+            <p class="text-gray-500 dark:text-stone-400 col-span-4">No cities added yet.</p>
         {% endfor %}
     </div>
 {% endblock %}

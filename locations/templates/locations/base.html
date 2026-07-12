@@ -7,6 +7,17 @@
     <!-- "DEV |" виден во вкладке браузера только локально (DEBUG=True), чтобы не перепутать с продом -->
     <title>{% if IS_DEV %}DEV | {% endif %}{% block title %}TravelPinHunt{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Тёмная тема управляется вручную через класс .dark на <html>, а не через системную настройку -->
+    <script>
+        tailwind.config = { darkMode: 'class' };
+    </script>
+    <!-- Ставим класс dark до отрисовки страницы, чтобы избежать мигания светлой темой (FOUC) -->
+    <script>
+        if (localStorage.theme === 'dark' ||
+            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
     <link rel="icon" href="{% static 'tph_logo_512.webp' %}">
     <link rel="apple-touch-icon" href="{% static 'apple-touch-icon.png' %}">
 
@@ -49,6 +60,14 @@
 <!-- Скрипт нужный для функционала по подстановке цвета флага при открытии страны -->
 <script>
     const pageCountry = "{{ page_country_slug|default:'' }}";
+</script>
+
+<!-- Переключатель тёмной темы: тоглит класс dark на <html> и запоминает выбор в localStorage -->
+<script>
+    function toggleTheme() {
+        document.documentElement.classList.toggle('dark');
+        localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    }
 </script>
 
 <!-- Функционал для рандомных цветов флагов в заголовке сайта -->
@@ -255,8 +274,8 @@
 </script>
 </head>
 
-<body class="bg-gray-50 text-gray-900 min-h-screen">
-    <header class="bg-white border-b border-gray-200 py-3 sticky top-0 z-50">
+<body class="bg-gray-50 text-gray-900 dark:bg-stone-950 dark:text-stone-100 min-h-screen">
+    <header class="bg-white border-b border-gray-200 dark:bg-stone-900 dark:border-stone-800 py-3 sticky top-0 z-50">
         <div class="flex items-center justify-between max-w-4xl mx-auto px-6">
             <a href="/" class="logo-link text-2xl sm:text-2xl font-bold tracking-tight whitespace-nowrap leading-none flex items-center">
                 <span class="logo-t logo-text text-amber-800">Travel</span><span class="logo-p logo-text text-amber-800">Pin</span><span class="logo-h logo-text text-amber-800">Hunt</span>
@@ -265,10 +284,17 @@
                     <span class="ml-2 text-[10px] font-bold uppercase tracking-wider bg-red-600 text-white px-1.5 py-0.5 rounded">Dev</span>
                 {% endif %}
             </a>
-            <nav class="flex gap-4 sm:gap-6 text-sm text-gray-600 items-center ml-3">
-                <a href="/about/" class="text-amber-700 hover:text-amber-800 font-bold transition">About</a>
-                <a href="/submit/" class="bg-amber-800 text-white px-2 py-1.5 sm:px-4 sm:py-2 rounded-lg hover:bg-amber-900 transition font-bold text-xs sm:text-sm whitespace-nowrap">
-                    <span class="sm:hidden">+ Submit</span>
+            <nav class="flex gap-4 sm:gap-6 text-sm text-gray-600 dark:text-stone-400 items-center ml-3">
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <!-- Кнопка переключения темы: солнце показывается в тёмной теме (чтобы вернуться на светлую), луна — в светлой -->
+                    <button onclick="toggleTheme()" aria-label="Toggle dark mode" class="text-gray-500 hover:text-amber-700 dark:text-stone-400 dark:hover:text-amber-400 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 hidden dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    </button>
+                    <a href="/about/" class="text-amber-700 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-300 font-bold transition">About</a>
+                </div>
+                <a href="/submit/" class="bg-amber-800 text-white px-2 py-1.5 sm:px-4 sm:py-2 rounded-lg hover:bg-amber-900 dark:bg-amber-700 dark:hover:bg-amber-600 transition font-bold text-xs sm:text-sm whitespace-nowrap">
+                    <span class="sm:hidden">Submit</span>
                     <span class="hidden sm:inline">+ Submit location</span>
                 </a>
             </nav>
@@ -280,11 +306,11 @@
         {% endblock %}
     </main>
 
-    <footer class="border-t border-gray-200 mt-5 py-6">
-    <div class="max-w-4xl mx-auto px-6 flex flex-col sm:flex-row items-center sm:items-baseline justify-between gap-3 sm:gap-2 text-sm text-amber-700 text-center">
-        <span class="text-sm text-amber-700">Made while travelling 🌍✈️👨🏼‍💻</span>
+    <footer class="border-t border-gray-200 dark:border-stone-800 mt-5 py-6">
+    <div class="max-w-4xl mx-auto px-6 flex flex-col sm:flex-row items-center sm:items-baseline justify-between gap-3 sm:gap-2 text-sm text-amber-700 dark:text-amber-400 text-center">
+        <span class="text-sm text-amber-700 dark:text-amber-400">Made while travelling 🌍✈️👨🏼‍💻</span>
         <span class="flex items-baseline gap-2">
-            <a href="{% url 'locations:contributors' %}" class="border border-amber-800 bg-white text-amber-700 px-3 py-0.5 rounded-full hover:bg-amber-50 transition">Contributors</a>
+            <a href="{% url 'locations:contributors' %}" class="border border-amber-800 bg-white text-amber-700 hover:bg-amber-50 dark:border-amber-600 dark:bg-stone-900 dark:text-amber-400 dark:hover:bg-gray-800 px-3 py-0.5 rounded-full transition">Contributors</a>
             <span>· © 2026</span>
         </span>
     </div>
