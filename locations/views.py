@@ -168,15 +168,47 @@ def submit_success(request):
 
 def contributors(request):
     # Никнеймы контрибьюторов, у кого хотя бы одна заявка одобрена (Approved).
-    # Считаем сколько одобренных заявок у каждого никнейма, сортируем по убыванию.
-    contributors_list = (
+    # country_name в заявке — это свободный текст, а не FK на Country, поэтому
+    # сопоставляем его с моделью Country по названию (без учёта регистра), чтобы взять флаг.
+    approved = (
         LocationSubmission.objects
         .filter(status=LocationSubmission.APPROVED)
         .exclude(contributor_nickname="")
-        .values("contributor_nickname")
-        .annotate(submission_count=Count("id"))
-        .order_by("-submission_count", "contributor_nickname")
+        .values("contributor_nickname", "country_name")
     )
+    country_flags = {country.name.lower(): country.flag for country in Country.objects.all()}
+
+    # Частые варианты написания, которые люди вводят вместо полного названия страны
+    country_aliases = {
+        "usa": "united states",
+        "us": "united states",
+        "u.s.a.": "united states",
+        "u.s.": "united states",
+        "united states of america": "united states",
+    }
+
+    def resolve_flag(country_name):
+        # Берём часть до запятой на случай "USA, California" — сам штат/город игнорируем
+        key = country_name.strip().split(",")[0].strip().lower()
+        key = country_aliases.get(key, key)
+        return country_flags.get(key)
+
+    contributors_by_nickname = {}
+    for row in approved:
+        nickname = row["contributor_nickname"]
+        entry = contributors_by_nickname.setdefault(nickname, {"submission_count": 0, "flags": []})
+        entry["submission_count"] += 1
+        flag = resolve_flag(row["country_name"])
+        if flag and flag not in entry["flags"]:
+            entry["flags"].append(flag)
+
+    contributors_list = [
+        {"contributor_nickname": nickname, **info}
+        for nickname, info in contributors_by_nickname.items()
+    ]
+    # сортируем по количеству одобренных заявок, при равенстве — по алфавиту
+    contributors_list.sort(key=lambda c: (-c["submission_count"], c["contributor_nickname"].lower()))
+
     return render(request, "locations/contributors.html", {
         "contributors_list": contributors_list,
     })
