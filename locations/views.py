@@ -2,10 +2,21 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Country, State, City, Location, LocationSubmission
 from .forms import LocationSubmissionForm
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.views.decorators.cache import never_cache
 import requests
 from django.conf import settings
+
+
+# Частые варианты написания, которые люди вводят вместо полного названия страны
+# (например "USA" вместо "United States"). Используется и в поиске на главной, и в contributors().
+COUNTRY_ALIASES = {
+    "usa": "united states",
+    "us": "united states",
+    "u.s.a.": "united states",
+    "u.s.": "united states",
+    "united states of america": "united states",
+}
 
 
 def home(request):
@@ -27,13 +38,18 @@ def home(request):
 
     if query:
         # ищем по вхождению строки в название города или страны (case-insensitive)
-        cities = City.objects.filter(
-            name__icontains=query
-        ).select_related("country", "state")
+        # плюс алиасы вроде "usa" -> "united states", чтобы такие запросы тоже находились
+        alias_target = COUNTRY_ALIASES.get(query.lower().strip())
 
-        countries_found = Country.objects.filter(
-            name__icontains=query
-        )
+        country_filter = Q(name__icontains=query)
+        city_filter = Q(name__icontains=query)
+        if alias_target:
+            country_filter |= Q(name__icontains=alias_target)
+            city_filter |= Q(country__name__icontains=alias_target)
+
+        cities = City.objects.filter(city_filter).select_related("country", "state")
+
+        countries_found = Country.objects.filter(country_filter)
 
         results = {
             "cities": cities,
@@ -178,19 +194,10 @@ def contributors(request):
     )
     country_flags = {country.name.lower(): country.flag for country in Country.objects.all()}
 
-    # Частые варианты написания, которые люди вводят вместо полного названия страны
-    country_aliases = {
-        "usa": "united states",
-        "us": "united states",
-        "u.s.a.": "united states",
-        "u.s.": "united states",
-        "united states of america": "united states",
-    }
-
     def resolve_flag(country_name):
         # Берём часть до запятой на случай "USA, California" — сам штат/город игнорируем
         key = country_name.strip().split(",")[0].strip().lower()
-        key = country_aliases.get(key, key)
+        key = COUNTRY_ALIASES.get(key, key)
         return country_flags.get(key)
 
     contributors_by_nickname = {}

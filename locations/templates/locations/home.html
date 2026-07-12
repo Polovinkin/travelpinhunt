@@ -47,6 +47,12 @@
         </div>
     </form>
     <script>
+        // autofocus по умолчанию ставит курсор в начало текста — переносим его в конец,
+        // чтобы после поиска можно было сразу дописывать запрос
+        const searchInputEl = document.getElementById('searchInput');
+        const searchInputLength = searchInputEl.value.length;
+        searchInputEl.setSelectionRange(searchInputLength, searchInputLength);
+
         // Если поле пустое — не отправляем форму (страница не перезагружается), а трясём инпут
         function handleSearchSubmit(event) {
             const input = document.getElementById('searchInput');
