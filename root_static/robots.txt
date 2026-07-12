@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /boss/
+Disallow: /submit/success/
+
+Sitemap: https://travelpinhunt.com/sitemap.xml

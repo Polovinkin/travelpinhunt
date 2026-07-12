@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     'locations'
 ]
 
@@ -62,6 +63,11 @@ CSRF_TRUSTED_ORIGINS = [
     "https://travelpinhunt.com",
     "https://www.travelpinhunt.com",
 ]
+
+# Railway terminates HTTPS and forwards requests to the app over plain HTTP,
+# adding this header to say the original request was secure. Without this,
+# Django thinks every request is http:// (breaks sitemap.xml URLs, request.is_secure(), etc).
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 ROOT_URLCONF = 'travelpinhunt.urls'
 
