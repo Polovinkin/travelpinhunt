@@ -1,12 +1,12 @@
 {% extends "locations/base.html" %}
 {% load static %}
 
-{% block title %}Pins in {{ state.name }}, {{ country.name }} — TravelPinHunt{% endblock %}
+{% block title %}Travel pins in {{ state.name }}, {{ country.name }} — TravelPinHunt{% endblock %}
 
 {% block meta_description %}Find shops selling enamel travel pins in {{ state.name }}, {{ country.name }}. Community-sourced locations with Google Maps links.{% endblock %}
 
 {% block og_tags %}
-<meta property="og:title" content="Pins in {{ state.name }}, {{ country.name }} — TravelPinHunt">
+<meta property="og:title" content="Travel pins in {{ state.name }}, {{ country.name }} — TravelPinHunt">
 <meta property="og:site_name" content="TravelPinHunt">
 <meta property="og:description" content="Find shops selling enamel travel pins in {{ state.name }}, {{ country.name }}. Community-sourced locations with Google Maps links.">
 <meta property="og:url" content="https://travelpinhunt.com{{ state.url }}">
@@ -22,7 +22,7 @@
 <meta property="og:image:height" content="900">
 <meta property="og:image:alt" content="Enamel pin shops in {{ state.name }}, {{ country.name }}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Pins in {{ state.name }}, {{ country.name }} — TravelPinHunt">
+<meta name="twitter:title" content="Travel pins in {{ state.name }}, {{ country.name }} — TravelPinHunt">
 <meta name="twitter:description" content="Find shops selling enamel travel pins in {{ state.name }}, {{ country.name }}. Community-sourced locations with Google Maps links.">
 <meta name="twitter:image" content="https://travelpinhunt.com/static/tph_banner_1600.jpg">
 <meta name="twitter:image:alt" content="Enamel pin shops in {{ state.name }}, {{ country.name }}">
@@ -44,8 +44,7 @@
                     {{ state.code }}
                 </span>
             {% endif %}
-            Pins in {{ state.name }}
-        </h1>
+            Travel pins in {{ state.name }}</h1>
         <p class="text-gray-500 mt-2">{{ cities|length }} cit{{ cities|length|pluralize:"y,ies" }} with pin selling locations</p>
     </div>
 

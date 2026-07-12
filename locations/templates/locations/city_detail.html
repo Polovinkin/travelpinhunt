@@ -1,12 +1,12 @@
 {% extends "locations/base.html" %}
 {% load static %}
 
-{% block title %}Pins in {{ city.name }}, {{ city.country.name }} — TravelPinHunt{% endblock %}
+{% block title %}Travel pins in {{ city.name }}, {{ city.country.name }} — TravelPinHunt{% endblock %}
 
 {% block meta_description %}Find shops selling enamel travel pins in {{ city.name }}, {{ city.country.name }}. Community-sourced locations with Google Maps links.{% endblock %}
 
 {% block og_tags %}
-<meta property="og:title" content="Pins in {{ city.name }}, {{ city.country.name }} — TravelPinHunt">
+<meta property="og:title" content="Travel pins in {{ city.name }}, {{ city.country.name }} — TravelPinHunt">
 <meta property="og:site_name" content="TravelPinHunt">
 <meta property="og:description" content="Find shops selling enamel travel pins in {{ city.name }}, {{ city.country.name }}. Community-sourced locations with Google Maps links.">
 <meta property="og:url" content="https://travelpinhunt.com{{ city.url }}">
@@ -22,7 +22,7 @@
 <meta property="og:image:height" content="900">
 <meta property="og:image:alt" content="Enamel pin shops in {{ city.name }}, {{ city.country.name }}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Pins in {{ city.name }}, {{ city.country.name }} — TravelPinHunt">
+<meta name="twitter:title" content="Travel pins in {{ city.name }}, {{ city.country.name }} — TravelPinHunt">
 <meta name="twitter:description" content="Find shops selling enamel travel pins in {{ city.name }}, {{ city.country.name }}. Community-sourced locations with Google Maps links.">
 <meta name="twitter:image" content="https://travelpinhunt.com/static/tph_banner_1600.jpg">
 <meta name="twitter:image:alt" content="Enamel pin shops in {{ city.name }}, {{ city.country.name }}">
@@ -52,12 +52,7 @@
                     </span>
                 {% endif %}
                 <!-- Название страны не дублируем, если оно совпадает с названием города (напр. Сингапур, Макао, Гонконг) -->
-                {% if city.name == city.country.name %}
-                    Pins in {{ city.name }}
-                {% else %}
-                    Pins in {{ city.name }}, {{ city.country.name }}
-                {% endif %}
-            </h1>
+                {% if city.name == city.country.name %}Travel pins in {{ city.name }}{% else %}Travel pins in {{ city.name }}, {{ city.country.name }}{% endif %}</h1>
             {% if city.location_type %}
                 <!-- Бейдж типа — например "Island" или "Region", если это не обычный город -->
                 <span class="text-sm bg-amber-50 text-amber-700 px-3 py-1 rounded-full font-medium">
