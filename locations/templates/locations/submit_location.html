@@ -22,7 +22,7 @@
 
     <div class="max-w-2xl">
         <h1 class="text-3xl font-bold mb-2">Submit a location</h1>
-        <p class="text-gray-500 dark:text-stone-400 mb-8">Know a place where travelers can buy enamel pins? Share it with the community!</p>
+        <p class="text-stone-500 dark:text-stone-400 mb-8">Know a place where travelers can buy enamel pins? Share it with the community!</p>
 
         <form method="POST" class="flex flex-col gap-3" autocomplete="on">
             {% csrf_token %}
@@ -37,14 +37,14 @@
             <!-- Страна и город в одну строку -->
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-stone-300 mb-1">Country</label>
+                    <label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Country</label>
                     {{ form.country_name }}
                     {% if form.country_name.errors %}
                         <p class="text-xs text-red-500 dark:text-red-400 mt-1">{{ form.country_name.errors.0 }}</p>
                     {% endif %}
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-stone-300 mb-1">City</label>
+                    <label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">City</label>
                     {{ form.city_name }}
                     {% if form.city_name.errors %}
                         <p class="text-xs text-red-500 dark:text-red-400 mt-1">{{ form.city_name.errors.0 }}</p>
@@ -54,29 +54,29 @@
 
             <!-- Название места -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-stone-300 mb-1">Location name</label>
+                <label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Location name</label>
                 {{ form.location_name }}
                 {% if form.location_name.errors %}
                     <p class="text-xs text-red-500 dark:text-red-400 mt-1">{{ form.location_name.errors.0 }}</p>
                 {% else %}
-                    <div class="text-xs text-gray-400 dark:text-stone-500 text-right mt-0.5">max 100 chars</div>
+                    <div class="text-xs text-stone-400 dark:text-stone-500 text-right mt-0.5">max 100 chars</div>
                 {% endif %}
             </div>
 
             <!-- Ссылка на Google Maps (обязательно) -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-stone-300 mb-1">Google Maps link</label>
+                <label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Google Maps link</label>
                 {{ form.google_maps_url }}
                 {% if form.google_maps_url.errors %}
                     <p class="text-xs text-red-500 dark:text-red-400 mt-1">{{ form.google_maps_url.errors.0 }}</p>
                 {% else %}
-                    <p class="text-xs text-gray-400 dark:text-stone-500 mt-1">Сopy the link from Google Maps, you can use Share button to generate it.</p>
+                    <p class="text-xs text-stone-400 dark:text-stone-500 mt-1">Сopy the link from Google Maps, you can use Share button to generate it.</p>
                 {% endif %}
             </div>
 
             <!-- Описание места -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-stone-300 mb-1">Description</label>
+                <label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Description</label>
                 {{ form.description }}
                 {% if form.description.errors %}
                     <p class="text-xs text-red-500 dark:text-red-400 mt-1">{{ form.description.errors.0 }}</p>
@@ -85,7 +85,7 @@
 
             <!-- Чекбоксы типов пинов: city / country / place -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-stone-300 mb-2">Pin types available</label>
+                <label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">Pin types available</label>
                 {% if form.non_field_errors %}
                     <p class="text-xs text-red-500 dark:text-red-400 mb-2">{{ form.non_field_errors.0 }}</p>
                 {% endif %}
@@ -103,49 +103,49 @@
                         <span class="text-sm whitespace-nowrap">🏛️ Place<span class="hidden sm:inline"> pins</span></span>
                     </label>
                 </div>
-                <p class="text-xs text-gray-400 dark:text-stone-500 mt-1">What's the theme of pins being sold there? You can choose several.</p>
-                <p class="text-xs text-gray-400 dark:text-stone-500 mt-1"><b>City</b> - means that city name or it's symbol is shown somewhere on the pin.</p>
-                <p class="text-xs text-gray-400 dark:text-stone-500 mt-1"><b>Country</b> - just a general pin about the country, it's symbols, or country's flag.</p>
-                <p class="text-xs text-gray-400 dark:text-stone-500 mt-1"><b>Place</b> - pin about some specific place there, like museum or attraction.</p>
+                <p class="text-xs text-stone-400 dark:text-stone-500 mt-1">What's the theme of pins being sold there? You can choose several.</p>
+                <p class="text-xs text-stone-400 dark:text-stone-500 mt-1"><b>City</b> - means that city name or it's symbol is shown somewhere on the pin.</p>
+                <p class="text-xs text-stone-400 dark:text-stone-500 mt-1"><b>Country</b> - just a general pin about the country, it's symbols, or country's flag.</p>
+                <p class="text-xs text-stone-400 dark:text-stone-500 mt-1"><b>Place</b> - pin about some specific place there, like museum or attraction.</p>
             </div>
 
             <!-- Ссылка на фото (опционально) -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-stone-300 mb-1">Photo link <span class="text-gray-400 dark:text-stone-500 font-normal">(optional)</span></label>
+                <label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Photo link <span class="text-stone-400 dark:text-stone-500 font-normal">(optional)</span></label>
                 {{ form.photo_url }}
                 {% if form.photo_url.errors %}
                     <p class="text-xs text-red-500 dark:text-red-400 mt-1">{{ form.photo_url.errors.0 }}</p>
                 {% else %}
-                    <p class="text-xs text-gray-400 dark:text-stone-500 mt-1">Upload a photo to Google Photos, Imgur or any other service and paste the public link here.</p>
+                    <p class="text-xs text-stone-400 dark:text-stone-500 mt-1">Upload a photo to Google Photos, Imgur or any other service and paste the public link here.</p>
                 {% endif %}
             </div>
 
             <!-- Разделитель: выше — про место, ниже — про самого контрибьютора -->
             <div class="flex items-center gap-3 my-2">
-                <div class="flex-1 border-t border-gray-200 dark:border-stone-700"></div>
-                <span class="text-xs text-gray-400 dark:text-stone-500 whitespace-nowrap">About you</span>
-                <div class="flex-1 border-t border-gray-200 dark:border-stone-700"></div>
+                <div class="flex-1 border-t border-stone-200 dark:border-stone-700"></div>
+                <span class="text-xs text-stone-400 dark:text-stone-500 whitespace-nowrap">About you</span>
+                <div class="flex-1 border-t border-stone-200 dark:border-stone-700"></div>
             </div>
 
             <!-- Никнейм контрибьютора (опционально) -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-stone-300 mb-1">Contributor nickname <span class="text-gray-400 dark:text-stone-500 font-normal">(optional)</span></label>
+                <label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Contributor nickname <span class="text-stone-400 dark:text-stone-500 font-normal">(optional)</span></label>
                 {{ form.contributor_nickname }}
                 {% if form.contributor_nickname.errors %}
                     <p class="text-xs text-red-500 dark:text-red-400 mt-1">{{ form.contributor_nickname.errors.0 }}</p>
                 {% else %}
-                    <p class="text-xs text-gray-400 dark:text-stone-500 mt-1">We'll credit you under this nickname in the <a href="{% url 'locations:contributors' %}" class="underline hover:text-amber-700 dark:hover:text-amber-400">Contributors</a> list on the site.</p>
+                    <p class="text-xs text-stone-400 dark:text-stone-500 mt-1">We'll credit you under this nickname in the <a href="{% url 'locations:contributors' %}" class="underline hover:text-amber-700 dark:hover:text-amber-400">Contributors</a> list on the site.</p>
                 {% endif %}
             </div>
 
             <!-- Email сабмиттера (опционально) -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-stone-300 mb-1">Your email <span class="text-gray-400 dark:text-stone-500 font-normal">(optional)</span></label>
+                <label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">Your email <span class="text-stone-400 dark:text-stone-500 font-normal">(optional)</span></label>
                 {{ form.submitter_email }}
                 {% if form.submitter_email.errors %}
                     <p class="text-xs text-red-500 dark:text-red-400 mt-1">{{ form.submitter_email.errors.0 }}</p>
                 {% else %}
-                    <p class="text-xs text-gray-400 dark:text-stone-500 mt-1">In case you are open for questions and we can follow up.</p>
+                    <p class="text-xs text-stone-400 dark:text-stone-500 mt-1">In case you are open for questions and we can follow up.</p>
                 {% endif %}
             </div>
 

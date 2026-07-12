@@ -1,8 +1,8 @@
 from django import forms
 from .models import LocationSubmission
 
-INPUT_CLASS = "w-full border border-gray-300 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100 dark:placeholder-stone-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-TEXTAREA_CLASS = "w-full border border-gray-300 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100 dark:placeholder-stone-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none"
+INPUT_CLASS = "w-full bg-white border border-stone-300 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100 dark:placeholder-stone-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+TEXTAREA_CLASS = "w-full bg-white border border-stone-300 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100 dark:placeholder-stone-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none"
 
 class LocationSubmissionForm(forms.ModelForm):
     class Meta:

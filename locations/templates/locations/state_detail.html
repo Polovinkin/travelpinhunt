@@ -30,7 +30,7 @@
 
 {% block content %}
     <!-- Breadcrumb: ссылка назад на страницу страны -->
-    <a href="/{{ country.slug }}/" class="text-sm text-gray-500 dark:text-stone-400 hover:text-gray-700 dark:hover:text-gray-200 flex items-center gap-1 mb-3 -mt-3">
+    <a href="/{{ country.slug }}/" class="text-sm text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 flex items-center gap-1 mb-3 -mt-3">
         ← {{ country.flag }} {{ country.name }}
     </a>
 
@@ -45,7 +45,7 @@
                 </span>
             {% endif %}
             Travel pins in {{ state.name }}</h1>
-        <p class="text-gray-500 dark:text-stone-400 mt-2">{{ cities|length }} cit{{ cities|length|pluralize:"y,ies" }} with pin selling locations</p>
+        <p class="text-stone-500 dark:text-stone-400 mt-2">{{ cities|length }} cit{{ cities|length|pluralize:"y,ies" }} with pin selling locations</p>
     </div>
 
     <!-- Сетка городов: 2 колонки на мобиле, 3 на десктопе -->
@@ -53,7 +53,7 @@
         {% for city in cities %}
             <!-- Карточка-ссылка на страницу города -->
             <a href="{{ city.url }}"
-            class="relative bg-white border border-gray-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg px-4 py-5 sm:px-6 sm:py-6 text-lg font-medium hover:border-amber-600 dark:hover:border-amber-500 hover:shadow-sm transition flex items-baseline justify-between gap-2">
+            class="relative bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg px-4 py-5 sm:px-6 sm:py-6 text-lg font-medium hover:border-amber-600 dark:hover:border-amber-500 hover:shadow-sm transition flex items-baseline justify-between gap-2">
                 <!-- Звёздочка столицы — маленькая, в левом верхнем углу карточки, не занимает место в строке названия -->
                 {% if city.is_capital %}
                     <span title="Capital" class="absolute top-1.5 left-1.5 text-sm leading-none text-amber-500 dark:text-amber-400 cursor-default">★</span>
@@ -68,11 +68,11 @@
                     {% endif %}
                 </div>
                 <!-- Количество локаций — жёстко зафиксировано справа, на уровне названия, никогда не переносится -->
-                <span class="text-sm text-gray-400 dark:text-stone-500 font-normal shrink-0">{{ city.location_count }}</span>
+                <span class="text-sm text-stone-400 dark:text-stone-500 font-normal shrink-0">{{ city.location_count }}</span>
             </a>
         {% empty %}
             <!-- Заглушка если для штата ещё нет ни одного города -->
-            <p class="text-gray-500 dark:text-stone-400 col-span-4">No cities added yet.</p>
+            <p class="text-stone-500 dark:text-stone-400 col-span-4">No cities added yet.</p>
         {% endfor %}
     </div>
 {% endblock %}
