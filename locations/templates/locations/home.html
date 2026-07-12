@@ -15,9 +15,23 @@
     </div>
 
     <!-- Строка поиска по городам и странам -->
-    <form method="GET" action="/" class="mb-8">
+    <!-- Анимация "тряски" поля ввода при попытке искать с пустым запросом (вместо просто перезагрузки страницы) -->
+    <style>
+        @keyframes search-shake {
+            10%, 90% { transform: translateX(-1px); }
+            20%, 80% { transform: translateX(2px); }
+            30%, 50%, 70% { transform: translateX(-4px); }
+            40%, 60% { transform: translateX(4px); }
+        }
+        .search-shake {
+            animation: search-shake 0.4s ease-in-out;
+            border-color: #dc2626 !important;
+        }
+    </style>
+    <form method="GET" action="/" class="mb-8" onsubmit="return handleSearchSubmit(event)">
         <div class="flex gap-2">
             <input
+                id="searchInput"
                 type="text"
                 name="q"
                 value="{{ query }}"
@@ -32,6 +46,22 @@
             </button>
         </div>
     </form>
+    <script>
+        // Если поле пустое — не отправляем форму (страница не перезагружается), а трясём инпут
+        function handleSearchSubmit(event) {
+            const input = document.getElementById('searchInput');
+            if (!input.value.trim()) {
+                event.preventDefault();
+                input.classList.remove('search-shake');
+                void input.offsetWidth; // reset анимации, если триггерим повторно подряд
+                input.classList.add('search-shake');
+                input.focus();
+                setTimeout(() => input.classList.remove('search-shake'), 400);
+                return false;
+            }
+            return true;
+        }
+    </script>
 
     {% if query %}
         <!-- Блок результатов поиска -->
