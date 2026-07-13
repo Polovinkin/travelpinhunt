@@ -53,7 +53,7 @@
         {% for city in cities %}
             <!-- Карточка-ссылка на страницу города -->
             <a href="{{ city.url }}"
-            class="relative bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg px-4 py-5 sm:px-6 sm:py-6 text-lg font-medium hover:border-amber-600 dark:hover:border-amber-500 hover:shadow-sm transition flex items-baseline justify-between gap-2">
+            class="relative bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg px-4 py-5 sm:px-6 sm:py-6 text-lg font-medium [@media(hover:hover)]:hover:border-amber-600 dark:[@media(hover:hover)]:hover:border-amber-500 [@media(hover:hover)]:hover:shadow-sm transition flex items-baseline justify-between gap-2">
                 <!-- Звёздочка столицы — маленькая, в левом верхнем углу карточки, не занимает место в строке названия -->
                 {% if city.is_capital %}
                     <span title="Capital" class="absolute top-1.5 left-1.5 text-sm leading-none text-amber-500 dark:text-amber-400 cursor-default">★</span>
