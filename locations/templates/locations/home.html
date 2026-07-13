@@ -38,7 +38,6 @@
                 placeholder="Search city or country..."
                 autocomplete="off"
                 class="flex-1 bg-white border border-stone-300 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100 dark:placeholder-stone-500 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-amber-500"
-                autofocus
             >
             <button type="submit"
                 class="bg-amber-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-amber-800 transition">
@@ -47,11 +46,15 @@
         </div>
     </form>
     <script>
-        // autofocus по умолчанию ставит курсор в начало текста — переносим его в конец,
-        // чтобы после поиска можно было сразу дописывать запрос
+        // Автофокус на поле поиска — только на десктопе (мышь + реальный hover).
+        // На мобильных клавиатура всё равно сама не открывается, а подсветка поля
+        // без открытой клавиатуры выглядит как баг, поэтому там не фокусируем поле вообще.
         const searchInputEl = document.getElementById('searchInput');
-        const searchInputLength = searchInputEl.value.length;
-        searchInputEl.setSelectionRange(searchInputLength, searchInputLength);
+        if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+            const searchInputLength = searchInputEl.value.length;
+            searchInputEl.focus();
+            searchInputEl.setSelectionRange(searchInputLength, searchInputLength);
+        }
 
         // Если поле пустое — не отправляем форму (страница не перезагружается), а трясём инпут
         function handleSearchSubmit(event) {
