@@ -424,7 +424,7 @@ class LocationSubmissionAdminForm(forms.ModelForm):
 @admin.register(LocationSubmission)
 class LocationSubmissionAdmin(admin.ModelAdmin):
     form = LocationSubmissionAdminForm
-    list_display = ["location_name", "city_name", "country_name", "contributor_nickname", "status", "created_at"]
+    list_display = ["location_name", "city_name", "country_name", "contributor_column", "status", "created_at"]
     list_filter = ["status", "has_city_pins", "has_country_pins", "has_place_pins"]
     search_fields = ["location_name", "city_name", "country_name"]
     readonly_fields = ["created_at", "pin_types_label", "create_location_link"]
@@ -450,6 +450,12 @@ class LocationSubmissionAdmin(admin.ModelAdmin):
     def pin_types_label(self, obj):
         return ""
     pin_types_label.short_description = "Pin types"
+
+    def contributor_column(self, obj):
+        # тот же contributor_nickname, но с укороченным заголовком колонки в списке
+        return obj.contributor_nickname
+    contributor_column.short_description = "Contributor"
+    contributor_column.admin_order_field = "contributor_nickname"
 
     def create_location_link(self, obj):
         # кнопка, открывающая форму "Add location" с уже заполненными name/description/
