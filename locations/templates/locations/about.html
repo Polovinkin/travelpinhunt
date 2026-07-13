@@ -24,9 +24,16 @@
                 The goal of TravelPinHunt is to solve this problem by firstly adding locations where author bought pins himself as a foundation,
                 and then crowd-sourcing pin locations from fellow collectors, who can submit them to be added to the main database via a special form.
             </p>
-            <div class="text-center">
+            <p>
+                When you submit pin selling location to the database you can leave your nickname there - so your contribution will be noted on a special page as a form of thanks
+                and to show people who helped travel pin collectors community! :)
+            </p>
+            <div class="flex flex-wrap items-center justify-center gap-4">
                 <a href="/submit/" class="inline-block bg-amber-800 text-white px-6 py-3 rounded-lg hover:bg-amber-900 transition font-bold text-base">
-                    + Add new location
+                    + Submit location
+                </a>
+                <a href="{% url 'locations:contributors' %}" class="inline-block border border-amber-800 bg-white text-amber-700 hover:bg-amber-50 dark:border-amber-600 dark:bg-stone-900 dark:text-amber-400 dark:hover:bg-stone-800 px-6 py-3 rounded-full transition font-bold text-base">
+                    See Contributors
                 </a>
             </div>
 
