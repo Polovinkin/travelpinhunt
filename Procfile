@@ -1,1 +1,1 @@
-web: python manage.py collectstatic --noinput && python manage.py migrate && gunicorn travelpinhunt.wsgi --workers 3 --threads 2
+web: python manage.py collectstatic --noinput && python manage.py migrate && gunicorn travelpinhunt.wsgi --workers 2 --threads 2
