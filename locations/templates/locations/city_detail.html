@@ -3,7 +3,7 @@
 
 {% block title %}Travel pins in {{ city.name }}, {{ city.country.name }} — TravelPinHunt{% endblock %}
 
-{% block meta_description %}Find shops selling enamel travel pins in {{ city.name }}, {{ city.country.name }}. Community-sourced locations with Google Maps links.{% endblock %}
+{% block meta_description %}See {{ locations|length }} shop{{ locations|length|pluralize }} selling travel pins in {{ city.name }}, {{ city.country.name }}, found by the community. Direct links to each location on Google Maps.{% endblock %}
 
 {% block og_tags %}
 <meta property="og:title" content="Travel pins in {{ city.name }}, {{ city.country.name }} — TravelPinHunt">

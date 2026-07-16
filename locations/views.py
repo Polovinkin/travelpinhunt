@@ -75,6 +75,9 @@ def country_detail(request, country_slug):
     # 404 если страна не найдена
     country = get_object_or_404(Country, slug=country_slug)
 
+    # Общее число локаций в стране — используется в meta description для более конкретного сниппета
+    total_locations = Location.objects.filter(city__country=country).count()
+
     if country.has_states:
         # "штатные" страны (например США): сначала показываем штаты, в которых есть
         # хотя бы один город с добавленными локациями — как на главной для стран
@@ -85,6 +88,7 @@ def country_detail(request, country_slug):
             "country": country,
             "states": states,
             "page_country_slug": country.slug,
+            "total_locations": total_locations,
         })
 
     cities = City.objects.filter(country=country).annotate(location_count=Count("locations")).order_by("name")
@@ -92,6 +96,7 @@ def country_detail(request, country_slug):
         "country": country,
         "cities": cities,
         "page_country_slug": country.slug,
+        "total_locations": total_locations,
     })
 
 
@@ -110,11 +115,14 @@ def state_detail(request, country, state_slug):
     cities = City.objects.filter(state=state).select_related("country", "state").annotate(
         location_count=Count("locations")
     ).order_by("name")
+    # Общее число локаций в штате — используется в meta description для более конкретного сниппета
+    total_locations = Location.objects.filter(city__state=state).count()
     return render(request, "locations/state_detail.html", {
         "country": country,
         "state": state,
         "cities": cities,
         "page_country_slug": country.slug,
+        "total_locations": total_locations,
     })
 
 
