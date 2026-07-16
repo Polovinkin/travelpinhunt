@@ -3,6 +3,9 @@
 
 {% block title %}TravelPinHunt — Find Travel Pins Worldwide{% endblock %}
 
+<!-- Meta description dedicated to the homepage, otherwise Google tends to grab the stats block text instead -->
+{% block meta_description %}Community-built database of places where you can buy travel pins around the world, with direct links to Google Maps. Browse locations or submit one yourself.{% endblock %}
+
 {% block content %}
     <!-- Баннер с фото коллекции пинов -->
     <img src="{% static 'images/wider_banner_2000x400.webp' %}" alt="Travel pins collection"
