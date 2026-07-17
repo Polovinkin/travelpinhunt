@@ -137,7 +137,10 @@ def city_detail(request, country, city_slug, state=None):
     if state is not None:
         lookup["state"] = state
     city = get_object_or_404(City, **lookup)
-    locations = Location.objects.filter(city=city).prefetch_related("pin_types")
+    # сначала локации с бóльшим числом разных типов пинов (3 -> 2 -> 1), внутри группы — по имени
+    locations = Location.objects.filter(city=city).prefetch_related("pin_types").annotate(
+        pin_type_count=Count("pin_types", distinct=True)
+    ).order_by("-pin_type_count", "name")
     return render(request, "locations/city_detail.html", {
         "city": city,
         "locations": locations,
