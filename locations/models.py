@@ -35,6 +35,11 @@ class Country(models.Model):
         # 'A' = 0x1F1E6, 'B' = 0x1F1E7, и т.д. — браузер склеивает два символа в один флаг
         return "".join(chr(0x1F1E6 + ord(c) - ord("A")) for c in self.code.upper())
 
+    @property
+    def url(self):
+        # для единообразия с State.url и City.url — упрощает сборку ссылок в шаблонах
+        return f"/{self.slug}/"
+
 
 class State(models.Model):
     """Штат/провинция/регион внутри страны. Универсальная модель — не только для США,

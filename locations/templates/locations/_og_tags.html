@@ -1,0 +1,33 @@
+<!-- Shared OG/Twitter meta tags for country/state/city detail pages. -->
+<!-- Included with two variables: og_location (display name shown in the title/description, -->
+<!-- e.g. "France" or "California, United States") and og_url (full absolute URL of the page). -->
+<!-- Warning for future edits: never write Django template tag delimiters inside a comment in -->
+<!-- this file. Django's template lexer scans the whole file for tag syntax and does not treat -->
+<!-- HTML comments as a safe zone, so writing them out here would make this file include itself. -->
+
+<meta property="og:title" content="Travel pins in {{ og_location }} — TravelPinHunt">
+<meta property="og:site_name" content="TravelPinHunt">
+<meta property="og:description" content="Find shops selling enamel travel pins in {{ og_location }}. Community-sourced locations with Google Maps links.">
+<meta property="og:url" content="{{ og_url }}">
+<meta property="og:type" content="website">
+
+<!-- Wide banner (2752×1444) — preferred by Facebook, LinkedIn, Telegram -->
+<meta property="og:image" content="https://travelpinhunt.com/static/tph_banner_1600.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="840">
+<meta property="og:image:alt" content="Enamel pin shops in {{ og_location }}">
+
+<!-- Square banner (900×900) — fallback for WhatsApp and platforms that prefer square -->
+<meta property="og:image" content="https://travelpinhunt.com/static/tph_banner_square_900.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="900">
+<meta property="og:image:height" content="900">
+<meta property="og:image:alt" content="Enamel pin shops in {{ og_location }}">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Travel pins in {{ og_location }} — TravelPinHunt">
+<meta name="twitter:description" content="Find shops selling enamel travel pins in {{ og_location }}. Community-sourced locations with Google Maps links.">
+<meta name="twitter:image" content="https://travelpinhunt.com/static/tph_banner_1600.jpg">
+<meta name="twitter:image:alt" content="Enamel pin shops in {{ og_location }}">

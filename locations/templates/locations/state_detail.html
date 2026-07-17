@@ -6,26 +6,7 @@
 {% block meta_description %}See {{ total_locations }} shop{{ total_locations|pluralize }} selling travel pins in {{ state.name }}, {{ country.name }}, found by the community. Direct links to each location on Google Maps.{% endblock %}
 
 {% block og_tags %}
-<meta property="og:title" content="Travel pins in {{ state.name }}, {{ country.name }} — TravelPinHunt">
-<meta property="og:site_name" content="TravelPinHunt">
-<meta property="og:description" content="Find shops selling enamel travel pins in {{ state.name }}, {{ country.name }}. Community-sourced locations with Google Maps links.">
-<meta property="og:url" content="https://travelpinhunt.com{{ state.url }}">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://travelpinhunt.com/static/tph_banner_1600.jpg">
-<meta property="og:image:type" content="image/jpeg">
-<meta property="og:image:width" content="1600">
-<meta property="og:image:height" content="840">
-<meta property="og:image:alt" content="Enamel pin shops in {{ state.name }}, {{ country.name }}">
-<meta property="og:image" content="https://travelpinhunt.com/static/tph_banner_square_900.jpg">
-<meta property="og:image:type" content="image/jpeg">
-<meta property="og:image:width" content="900">
-<meta property="og:image:height" content="900">
-<meta property="og:image:alt" content="Enamel pin shops in {{ state.name }}, {{ country.name }}">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Travel pins in {{ state.name }}, {{ country.name }} — TravelPinHunt">
-<meta name="twitter:description" content="Find shops selling enamel travel pins in {{ state.name }}, {{ country.name }}. Community-sourced locations with Google Maps links.">
-<meta name="twitter:image" content="https://travelpinhunt.com/static/tph_banner_1600.jpg">
-<meta name="twitter:image:alt" content="Enamel pin shops in {{ state.name }}, {{ country.name }}">
+{% include "locations/_og_tags.html" with og_location=state.name|add:", "|add:country.name og_url="https://travelpinhunt.com"|add:state.url %}
 {% endblock %}
 
 {% block content %}
