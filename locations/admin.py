@@ -327,7 +327,7 @@ class LocationAdminForm(forms.ModelForm):
 class LocationAdmin(admin.ModelAdmin):
     form = LocationAdminForm
     list_display = ["name", "city", "created_at"]
-    search_fields = ["name", "description"]
+    search_fields = ["name", "description", "city__name"]  # city__name — чтобы искать локации по названию города
     list_filter = ["pin_types"]
     readonly_fields = ["lat", "lng", "created_at", "updated_at"]  # координаты редактируются только через поле coordinates
     autocomplete_fields = ["city"]
