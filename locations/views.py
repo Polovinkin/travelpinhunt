@@ -157,20 +157,20 @@ def submit_location(request):
         form = LocationSubmissionForm(request.POST)
 
         # Проверяем Turnstile токен через Cloudflare API
-        token = request.POST.get('cf-turnstile-response', '')
+        token = request.POST.get("cf-turnstile-response", "")
         turnstile_ok = False
         if token:
             try:
                 cf_response = requests.post(
-                    'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+                    "https://challenges.cloudflare.com/turnstile/v0/siteverify",
                     data={
-                        'secret': settings.TURNSTILE_SECRET_KEY,
-                        'response': token,
-                        'remoteip': request.META.get('REMOTE_ADDR'),
+                        "secret": settings.TURNSTILE_SECRET_KEY,
+                        "response": token,
+                        "remoteip": request.META.get("REMOTE_ADDR"),
                     },
                     timeout=5,
                 )
-                turnstile_ok = cf_response.json().get('success', False)
+                turnstile_ok = cf_response.json().get("success", False)
             except requests.RequestException:
                 turnstile_ok = False
 
@@ -179,7 +179,7 @@ def submit_location(request):
             return redirect("locations:submit_success")
 
         if not turnstile_ok:
-            form.add_error(None, 'Captcha check failed. Please try again.')
+            form.add_error(None, "Captcha check failed. Please try again.")
 
     else:
         form = LocationSubmissionForm()
