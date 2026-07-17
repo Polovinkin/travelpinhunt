@@ -47,9 +47,14 @@ def home(request):
             country_filter |= Q(name__icontains=alias_target)
             city_filter |= Q(country__name__icontains=alias_target)
 
-        cities = City.objects.filter(city_filter).select_related("country", "state")
+        # исключаем города/страны без единой локации — им некуда вести со страницы поиска
+        cities = City.objects.filter(city_filter, locations__isnull=False).select_related(
+            "country", "state"
+        ).distinct()
 
-        countries_found = Country.objects.filter(country_filter)
+        countries_found = Country.objects.filter(
+            country_filter, cities__locations__isnull=False
+        ).distinct()
 
         results = {
             "cities": cities,
