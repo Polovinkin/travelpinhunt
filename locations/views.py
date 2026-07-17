@@ -132,7 +132,7 @@ def city_detail(request, country, city_slug, state=None):
     if state is not None:
         lookup["state"] = state
     city = get_object_or_404(City, **lookup)
-    locations = Location.objects.filter(city=city)
+    locations = Location.objects.filter(city=city).prefetch_related("pin_types")
     return render(request, "locations/city_detail.html", {
         "city": city,
         "locations": locations,
