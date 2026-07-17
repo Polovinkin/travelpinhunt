@@ -1,9 +1,12 @@
 # Настройка встроенной админки Django. Регистрирую модели, настраиваю как они выглядят и редактируются в /admin.
+from .models import Country, State, City, PinType, Location, LocationSubmission
 from django.contrib import admin
 from django import forms
 from django.db import models
-from .models import Country, State, City, PinType, Location, LocationSubmission
 from django.utils.text import slugify
+from django.urls import reverse
+from django.utils.html import format_html
+from urllib.parse import urlencode
 
 
 # --- COUNTRIES ---
@@ -51,21 +54,19 @@ class CountryAdmin(admin.ModelAdmin):
 
         return qs
 
+    @admin.display(description="Flag")
     def flag_display(self, obj):
         # эмодзи флага для визуала в списке стран
         return obj.flag
-    flag_display.short_description = "Flag"
 
+    @admin.display(description="Cities", ordering="city_count_annotated")
     def city_count(self, obj):
         return obj.city_count_annotated
-    city_count.short_description = "Cities"
-    city_count.admin_order_field = "city_count_annotated"
 
+    @admin.display(description="Locations", ordering="location_count_annotated")
     def location_count(self, obj):
         # сколько всего pin locations в городах этой страны
         return obj.location_count_annotated
-    location_count.short_description = "Locations"
-    location_count.admin_order_field = "location_count_annotated"
 
 
 # --- STATES ---
@@ -122,14 +123,13 @@ class StateAdmin(admin.ModelAdmin):
             city_count_annotated=models.Count("cities", distinct=True),
         )
 
+    @admin.display(description="Flag")
     def flag_display(self, obj):
         return obj.country.flag
-    flag_display.short_description = "Flag"
 
+    @admin.display(description="Cities", ordering="city_count_annotated")
     def city_count(self, obj):
         return obj.city_count_annotated
-    city_count.short_description = "Cities"
-    city_count.admin_order_field = "city_count_annotated"
 
     def _country_flags_context(self):
         # переиспользуем ту же логику и тот же JS, что и в CityAdmin — см. там подробный комментарий
@@ -224,15 +224,15 @@ class CityAdmin(admin.ModelAdmin):
             kwargs["queryset"] = State.objects.select_related("country").order_by("country__name", "name")
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
+    @admin.display(description="Locations")
     def location_count(self, obj):
         # показывает сколько pin locations добавлено в этом городе
         return obj.locations.count()
-    location_count.short_description = "Locations"
 
+    @admin.display(description="Flag")
     def flag_display(self, obj):
         # эмодзи флага страны рядом с её названием, как в списке стран
         return obj.country.flag
-    flag_display.short_description = "Flag"
 
     def _country_flags_context(self):
         # {country_id: flag_emoji} для JS, который рисует флаг рядом с полем Country.
@@ -399,10 +399,6 @@ class PinTypeAdmin(admin.ModelAdmin):
 
 # --- SUBMISSIONS (заявки от пользователей) ---
 
-from django.urls import reverse
-from django.utils.html import format_html
-from urllib.parse import urlencode
-
 class LocationSubmissionAdminForm(forms.ModelForm):
     """Кастомная форма заявки: эмодзи в лейблах чекбоксов совпадают с формой на /submit/"""
 
@@ -428,6 +424,9 @@ class LocationSubmissionAdmin(admin.ModelAdmin):
     list_filter = ["status", "has_city_pins", "has_country_pins", "has_place_pins"]
     search_fields = ["location_name", "city_name", "country_name"]
     readonly_fields = ["created_at", "pin_types_label", "create_location_link"]
+    formfield_overrides = {
+        models.TextField: {"widget": forms.Textarea(attrs={"rows": 4})},
+    }
     list_editable = ["status"]  # статус можно менять прямо в списке без захода в каждую запись
     # явный порядок полей: description показывается раньше google_maps_url,
     # а photo_url — после чекбоксов с типами пинов
@@ -447,16 +446,16 @@ class LocationSubmissionAdmin(admin.ModelAdmin):
         ("Meta", {"fields": ["created_at", "notes"]}),
     ]
 
+    @admin.display(description="Pin types")
     def pin_types_label(self, obj):
         return ""
-    pin_types_label.short_description = "Pin types"
 
+    @admin.display(description="Contributor", ordering="contributor_nickname")
     def contributor_column(self, obj):
         # тот же contributor_nickname, но с укороченным заголовком колонки в списке
         return obj.contributor_nickname
-    contributor_column.short_description = "Contributor"
-    contributor_column.admin_order_field = "contributor_nickname"
 
+    @admin.display(description="Quick create")
     def create_location_link(self, obj):
         # кнопка, открывающая форму "Add location" с уже заполненными name/description/
         # google_maps_url/pin_types из этой заявки — остаётся выбрать только city (и создать
@@ -489,10 +488,6 @@ class LocationSubmissionAdmin(admin.ModelAdmin):
             '<a class="button" href="{}" target="_blank">+ Create Location from this submission</a>',
             url,
         )
-    create_location_link.short_description = "Quick create"
-    formfield_overrides = {
-        models.TextField: {"widget": forms.Textarea(attrs={"rows": 4})},
-    }
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
