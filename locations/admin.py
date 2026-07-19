@@ -196,7 +196,7 @@ class CityAdminForm(forms.ModelForm):
 class CityAdmin(admin.ModelAdmin):
     form = CityAdminForm
     list_display = ["name", "flag_display", "country", "state", "slug", "is_capital", "location_count"]
-    search_fields = ["name"]
+    search_fields = ["name", "country__name"]
     list_filter = ["country"]
     readonly_fields = ["slug"]  # slug генерируется автоматически из name
     autocomplete_fields = ["country"]  # поиск страны по названию вместо огромного дропдауна
